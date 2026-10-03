@@ -1,18 +1,19 @@
 package ENTITY;
 
-import java.time.DateTimeException;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class NhanVien {
+	
 	private String maNhanVien;
 	private String hoTenNhanVien;
-	private String chucVu;
+	private String chucVu; //NVBH NVKT NVQL
 	private String soDienThoai;
-	private Date ngaySinh;
-	private float heSoLuong;
+	private LocalDate ngaySinh;
+	private float heSoLuong; // NVBH: 2,4        NVKT: 2,3     
 	private int luongCoBan;
-	private boolean trangThai; //còn làm/nghỉ việc
-	public NhanVien(String maNhanVien, String hoTenNhanVien, String chucVu, String soDienThoai, Date ngaySinh,
+	private boolean trangThai; // còn làm việc / đã nghỉ việc
+	
+	public NhanVien(String maNhanVien, String hoTenNhanVien, String chucVu, String soDienThoai, LocalDate ngaySinh,
 			float heSoLuong, int luongCoBan, boolean trangThai) {
 		super();
 		this.maNhanVien = maNhanVien;
@@ -48,10 +49,10 @@ public class NhanVien {
 	public void setSoDienThoai(String soDienThoai) {
 		this.soDienThoai = soDienThoai;
 	}
-	public Date getNgaySinh() {
+	public LocalDate getNgaySinh() {
 		return ngaySinh;
 	}
-	public void setNgaySinh(Date ngaySinh) {
+	public void setNgaySinh(LocalDate ngaySinh) {
 		this.ngaySinh = ngaySinh;
 	}
 	public float getHeSoLuong() {
@@ -74,25 +75,29 @@ public class NhanVien {
 	}
 	
 	
-	//thiếu method
-	//
-	//
-	//
-	//
-	//
-	//
+	public NhanVien() {}
+	//tính lương
+	public double tinhLuong() {
+		return heSoLuong * luongCoBan;
+	}
 	
+	//đăng ký ca làm việc
+	public void dangKyCaLam() {
+		//.......
+	}
 	
+	//chỉnh sửa thông tin cá nhân
+	public void capNhatThongTin() {
+		//.......
+	}
 	
-	
-	
+
 	@Override
 	public String toString() {
 		return "NhanVien [maNhanVien=" + maNhanVien + ", hoTenNhanVien=" + hoTenNhanVien + ", chucVu=" + chucVu
 				+ ", soDienThoai=" + soDienThoai + ", ngaySinh=" + ngaySinh + ", heSoLuong=" + heSoLuong
 				+ ", luongCoBan=" + luongCoBan + ", trangThai=" + trangThai + "]";
 	}
-	
 	
 	
 }
