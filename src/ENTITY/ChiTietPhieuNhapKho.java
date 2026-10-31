@@ -2,26 +2,19 @@ package ENTITY;
 
 public class ChiTietPhieuNhapKho {
 	
-	private String maChiTietPNK;
 	private PhieuNhapKho maPhieuNhapKho;
 	private SanPham maSanPham;
 	private int soLuong;
 	private double donGia;
-	public ChiTietPhieuNhapKho(String maChiTietPNK, PhieuNhapKho maPhieuNhapKho, SanPham maSanPham, int soLuong,
+	public ChiTietPhieuNhapKho( PhieuNhapKho maPhieuNhapKho, SanPham maSanPham, int soLuong,
 			double donGia) {
 		super();
-		this.maChiTietPNK = maChiTietPNK;
 		this.maPhieuNhapKho = maPhieuNhapKho;
 		this.maSanPham = maSanPham;
 		this.soLuong = soLuong;
 		this.donGia = donGia;
 	}
-	public String getMaChiTietPNK() {
-		return maChiTietPNK;
-	}
-	public void setMaChiTietPNK(String maChiTietPNK) {
-		this.maChiTietPNK = maChiTietPNK;
-	}
+	
 	public PhieuNhapKho getMaPhieuNhapKho() {
 		return maPhieuNhapKho;
 	}
@@ -49,12 +42,8 @@ public class ChiTietPhieuNhapKho {
 	
 	
 	//thiếu method
-			//
-			//
-			//
-			//
-			//
-			//
+	public void CapNhatSoLuong () {} // thiếu code 
+	
 	public double thanhTien() { 
 		return soLuong * donGia; 
 		}
@@ -64,7 +53,7 @@ public class ChiTietPhieuNhapKho {
 	
 	@Override
 	public String toString() {
-		return "ChiTietPhieuNhapKho [maChiTietPNK=" + maChiTietPNK + ", maPhieuNhapKho=" + maPhieuNhapKho
+		return "ChiTietPhieuNhapKho [maPhieuNhapKho=" + maPhieuNhapKho
 				+ ", maSanPham=" + maSanPham + ", soLuong=" + soLuong + ", donGia=" + donGia + "]";
 	}
 	

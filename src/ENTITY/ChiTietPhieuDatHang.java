@@ -59,6 +59,8 @@ public class ChiTietPhieuDatHang {
 		return soLuong * donGia; 
 		}
 	
+	public void CapNhatSoLuong() {} //thiểu code
+	
 	@Override
 	public String toString() {
 		return "ChiTieuPhieuDatHang [maChiTietPDH=" + maChiTietPDH + ", maPhieuDatHang=" + maPhieuDatHang

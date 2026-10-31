@@ -10,19 +10,17 @@ public class KhuyenMai {
     private LocalDateTime thoiGianKetThuc;
     private double giaTriGiam;
     private boolean trangThai;
-    private String ghiChu;
 
     public KhuyenMai() {}
 
     public KhuyenMai(String maKhuyenMai, String tenKhuyenMai, LocalDateTime thoiGianBatDau,
-                     LocalDateTime thoiGianKetThuc, double giaTriGiam, boolean trangThai, String ghiChu) {
+                     LocalDateTime thoiGianKetThuc, double giaTriGiam, boolean trangThai) {
         this.maKhuyenMai = maKhuyenMai;
         this.tenKhuyenMai = tenKhuyenMai;
         this.thoiGianBatDau = thoiGianBatDau;
         this.thoiGianKetThuc = thoiGianKetThuc;
         this.giaTriGiam = giaTriGiam;
         this.trangThai = trangThai;
-        this.ghiChu = ghiChu;
     }
 
     public String getMaKhuyenMai() { return maKhuyenMai; }
@@ -37,8 +35,6 @@ public class KhuyenMai {
     public void setGiaTriGiam(double giaTriGiam) { this.giaTriGiam = giaTriGiam; }
     public boolean isTrangThai() { return trangThai; }
     public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
-    public String getGhiChu() { return ghiChu; }
-    public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
 
     // ===== METHOD BỔ SUNG =====
     /** Kiểm tra khuyến mãi còn hiệu lực */

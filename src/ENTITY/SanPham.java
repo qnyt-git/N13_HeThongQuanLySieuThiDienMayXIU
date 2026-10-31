@@ -5,10 +5,9 @@ import ENUM.*;
 public class SanPham {
     private String maSanPham;
     private String tenSanPham;
-    private String maVach;
     private double giaBan;
     private int soLuongTon;
-    private String thoiHanBaoHanh;
+    private String thoiHanBaoHanh; //1 năm/12 tháng; 2 năm......
     private TrangThaiSanPham trangThai;
 
     public SanPham() {}
@@ -17,7 +16,6 @@ public class SanPham {
                    int soLuongTon, String thoiHanBaoHanh, TrangThaiSanPham trangThai) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
-        this.maVach = maVach;
         this.giaBan = giaBan;
         this.soLuongTon = soLuongTon;
         this.thoiHanBaoHanh = thoiHanBaoHanh;
@@ -28,8 +26,6 @@ public class SanPham {
     public void setMaSanPham(String maSanPham) { this.maSanPham = maSanPham; }
     public String getTenSanPham() { return tenSanPham; }
     public void setTenSanPham(String tenSanPham) { this.tenSanPham = tenSanPham; }
-    public String getMaVach() { return maVach; }
-    public void setMaVach(String maVach) { this.maVach = maVach; }
     public double getGiaBan() { return giaBan; }
     public void setGiaBan(double giaBan) { this.giaBan = giaBan; }
     public int getSoLuongTon() { return soLuongTon; }

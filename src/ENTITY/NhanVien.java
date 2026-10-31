@@ -6,45 +6,102 @@ import java.util.Objects;
 public class NhanVien {
     private String maNhanVien;
     private String hoTenNhanVien;
-    private String chucVu;
+    private boolean gioiTinh; //Nam hoặc nữ
+    private String chucVu;		
     private String soDienThoai;
     private LocalDate ngaySinh;
-    private float heSoLuong;
+    private String TrinhDoHocVan; //điền các thông tin về trình độ học vấn
+    private float heSoLuong; // hệ số lương được sett theo chức vụ
+    						 // vd: quản lý: 3.0;  bán hàng: 2.3
     private int luongCoBan;
-    private boolean trangThai;
+  
+    private boolean trangThai; //mặc định khi thêm nhân viên là đang làm việc
+    							// khi nào chỉnh sửa nhân viên mới là đang làm việc/nghỉ việc
 
     public NhanVien() {}
-
-    public NhanVien(String maNhanVien, String hoTenNhanVien, String chucVu, String soDienThoai,
-                    LocalDate ngaySinh, float heSoLuong, int luongCoBan, boolean trangThai) {
-        this.maNhanVien = maNhanVien;
-        this.hoTenNhanVien = hoTenNhanVien;
-        this.chucVu = chucVu;
-        this.soDienThoai = soDienThoai;
-        this.ngaySinh = ngaySinh;
-        this.heSoLuong = heSoLuong;
-        this.luongCoBan = luongCoBan;
-        this.trangThai = trangThai;
-    }
-
-    public String getMaNhanVien() { return maNhanVien; }
-    public void setMaNhanVien(String maNhanVien) { this.maNhanVien = maNhanVien; }
-    public String getHoTenNhanVien() { return hoTenNhanVien; }
-    public void setHoTenNhanVien(String hoTenNhanVien) { this.hoTenNhanVien = hoTenNhanVien; }
-    public String getChucVu() { return chucVu; }
-    public void setChucVu(String chucVu) { this.chucVu = chucVu; }
-    public String getSoDienThoai() { return soDienThoai; }
-    public void setSoDienThoai(String soDienThoai) { this.soDienThoai = soDienThoai; }
-    public LocalDate getNgaySinh() { return ngaySinh; }
-    public void setNgaySinh(LocalDate ngaySinh) { this.ngaySinh = ngaySinh; }
-    public float getHeSoLuong() { return heSoLuong; }
-    public void setHeSoLuong(float heSoLuong) { this.heSoLuong = heSoLuong; }
-    public int getLuongCoBan() { return luongCoBan; }
-    public void setLuongCoBan(int luongCoBan) { this.luongCoBan = luongCoBan; }
-    public boolean isTrangThai() { return trangThai; }
-    public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
-
-    // ===== METHOD BỔ SUNG =====
+	public NhanVien(String maNhanVien, String hoTenNhanVien, boolean gioiTinh,
+										String chucVu, String soDienThoai, LocalDate ngaySinh, String trinhDoHocVan,
+										float heSoLuong, int luongCoBan, boolean trangThai) {
+									super();
+									this.maNhanVien = maNhanVien;
+									this.hoTenNhanVien = hoTenNhanVien;
+									this.gioiTinh = gioiTinh;
+									this.chucVu = chucVu;
+									this.soDienThoai = soDienThoai;
+									this.ngaySinh = ngaySinh;
+									TrinhDoHocVan = trinhDoHocVan;
+									this.heSoLuong = heSoLuong;
+									this.luongCoBan = luongCoBan;
+									this.trangThai = trangThai;
+								}
+	public String getMaNhanVien() {
+		return maNhanVien;
+	}
+	public void setMaNhanVien(String maNhanVien) {
+		this.maNhanVien = maNhanVien;
+	}
+	public String getHoTenNhanVien() {
+		return hoTenNhanVien;
+	}
+	public void setHoTenNhanVien(String hoTenNhanVien) {
+		this.hoTenNhanVien = hoTenNhanVien;
+	}
+	public boolean isGioiTinh() {
+		return gioiTinh;
+	}
+	public void setGioiTinh(boolean gioiTinh) {
+		this.gioiTinh = gioiTinh;
+	}
+	public String getChucVu() {
+		return chucVu;
+	}
+	public void setChucVu(String chucVu) {
+		this.chucVu = chucVu;
+	}
+	public String getSoDienThoai() {
+		return soDienThoai;
+	}
+	public void setSoDienThoai(String soDienThoai) {
+		this.soDienThoai = soDienThoai;
+	}
+	public LocalDate getNgaySinh() {
+		return ngaySinh;
+	}
+	public void setNgaySinh(LocalDate ngaySinh) {
+		this.ngaySinh = ngaySinh;
+	}
+	public String getTrinhDoHocVan() {
+		return TrinhDoHocVan;
+	}
+	public void setTrinhDoHocVan(String trinhDoHocVan) {
+		TrinhDoHocVan = trinhDoHocVan;
+	}
+	public float getHeSoLuong() {
+		return heSoLuong;
+	}
+	public void setHeSoLuong(float heSoLuong) {
+		this.heSoLuong = heSoLuong;
+	}
+	public int getLuongCoBan() {
+		return luongCoBan;
+	}
+	public void setLuongCoBan(int luongCoBan) {
+		this.luongCoBan = luongCoBan;
+	}
+	public boolean isTrangThai() {
+		return trangThai;
+	}
+	public void setTrangThai(boolean trangThai) {
+		this.trangThai = trangThai;
+	}
+	
+	
+	
+	
+	
+	
+	
+	// ===== METHOD BỔ SUNG =====
     /** Tính lương */
     public double tinhLuong() {
         return heSoLuong * luongCoBan;

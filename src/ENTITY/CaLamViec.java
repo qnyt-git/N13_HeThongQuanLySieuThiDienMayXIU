@@ -5,17 +5,15 @@ import java.time.LocalDateTime;
 public class CaLamViec {
     private String maCa;
     private String tenCa;
-    private NhanVien maNhanVien;
     private LocalDateTime gioBatDau;
     private LocalDateTime gioKetThuc;
 
     public CaLamViec() {}
 
-    public CaLamViec(String maCa, String tenCa, NhanVien maNhanVien,
+    public CaLamViec(String maCa, String tenCa,
                      LocalDateTime gioBatDau, LocalDateTime gioKetThuc) {
         this.maCa = maCa;
         this.tenCa = tenCa;
-        this.maNhanVien = maNhanVien;
         this.gioBatDau = gioBatDau;
         this.gioKetThuc = gioKetThuc;
     }
@@ -24,8 +22,6 @@ public class CaLamViec {
     public void setMaCa(String maCa) { this.maCa = maCa; }
     public String getTenCa() { return tenCa; }
     public void setTenCa(String tenCa) { this.tenCa = tenCa; }
-    public NhanVien getMaNhanVien() { return maNhanVien; }
-    public void setMaNhanVien(NhanVien maNhanVien) { this.maNhanVien = maNhanVien; }
     public LocalDateTime getGioBatDau() { return gioBatDau; }
     public void setGioBatDau(LocalDateTime gioBatDau) { this.gioBatDau = gioBatDau; }
     public LocalDateTime getGioKetThuc() { return gioKetThuc; }

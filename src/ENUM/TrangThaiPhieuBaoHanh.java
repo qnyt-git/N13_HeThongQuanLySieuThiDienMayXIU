@@ -2,8 +2,7 @@ package ENUM;
 
 /** Trạng thái phiếu bảo hành. */
 public enum TrangThaiPhieuBaoHanh {
-    DANG_XU_LY("Đang xử lý"),
-    DA_TRA("Đã trả"),
+    DA_XAC_NHAN("Đã Xác Nhận"),
     DA_HUY("Đã hủy");
 
     private final String nhan;

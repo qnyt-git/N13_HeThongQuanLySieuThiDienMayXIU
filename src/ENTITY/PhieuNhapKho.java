@@ -9,22 +9,20 @@ public class PhieuNhapKho {
     private LocalDateTime ngayNhap;
     private NhanVien maNhanVien;
     private NhaCungCap maNCC;
-    private String lyDoNhap;
-    private TrangThaiPhieuNhapKho trangThai;
-    private String ghiChu;
+    private String lyDoNhap; 
+    private TrangThaiPhieuNhapKho trangThai; // chờ duyệt / đã xác nhận / đã hủy
     private List<ChiTietPhieuNhapKho> chiTietList = new ArrayList<>();
 
     public PhieuNhapKho() {}
 
     public PhieuNhapKho(String maPhieuNhapKho, LocalDateTime ngayNhap, NhanVien maNhanVien,
-                        NhaCungCap maNCC, String lyDoNhap, TrangThaiPhieuNhapKho trangThai, String ghiChu) {
+                        NhaCungCap maNCC, String lyDoNhap, TrangThaiPhieuNhapKho trangThai) {
         this.maPhieuNhapKho = maPhieuNhapKho;
         this.ngayNhap = ngayNhap;
         this.maNhanVien = maNhanVien;
         this.maNCC = maNCC;
         this.lyDoNhap = lyDoNhap;
         this.trangThai = trangThai;
-        this.ghiChu = ghiChu;
     }
 
     // Getters/Setters
@@ -40,8 +38,6 @@ public class PhieuNhapKho {
     public void setLyDoNhap(String lyDoNhap) { this.lyDoNhap = lyDoNhap; }
     public TrangThaiPhieuNhapKho getTrangThai() { return trangThai; }
     public void setTrangThai(TrangThaiPhieuNhapKho trangThai) { this.trangThai = trangThai; }
-    public String getGhiChu() { return ghiChu; }
-    public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
     public List<ChiTietPhieuNhapKho> getChiTietList() { return chiTietList; }
     public void setChiTietList(List<ChiTietPhieuNhapKho> l) { this.chiTietList = l; }
 

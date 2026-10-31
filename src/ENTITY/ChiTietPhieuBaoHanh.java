@@ -1,27 +1,20 @@
 package ENTITY;
 
 public class ChiTietPhieuBaoHanh {
-
-	private String maChiTietPBH;
+	
 	private PhieuBaoHanh maPhieuBaoHanh;
 	private SanPham maSanPham;
 	private String tinhTrangSanPham; //tình trạng hiện tại của sản phẩm
 	private String noiDungBaoHanh; // vd: bảo hành do hư dây diện, bảo hành do mất ốc vít, bảo hành do lỗi.....
-	public ChiTietPhieuBaoHanh(String maChiTietPBH, PhieuBaoHanh maPhieuBaoHanh, SanPham maSanPham,
+	public ChiTietPhieuBaoHanh(PhieuBaoHanh maPhieuBaoHanh, SanPham maSanPham,
 			String tinhTrangSanPham, String noiDungBaoHanh) {
 		super();
-		this.maChiTietPBH = maChiTietPBH;
 		this.maPhieuBaoHanh = maPhieuBaoHanh;
 		this.maSanPham = maSanPham;
 		this.tinhTrangSanPham = tinhTrangSanPham;
 		this.noiDungBaoHanh = noiDungBaoHanh;
 	}
-	public String getMaChiTietPBH() {
-		return maChiTietPBH;
-	}
-	public void setMaChiTietPBH(String maChiTietPBH) {
-		this.maChiTietPBH = maChiTietPBH;
-	}
+
 	public PhieuBaoHanh getMaPhieuBaoHanh() {
 		return maPhieuBaoHanh;
 	}
@@ -59,10 +52,13 @@ public class ChiTietPhieuBaoHanh {
 	    return maSanPham != null && tinhTrangSanPham != null && !tinhTrangSanPham.isEmpty()
 	        && noiDungBaoHanh != null && !noiDungBaoHanh.isEmpty();
 	}
+	public void CapNhatTinhTrang() {}
+	public void CapNhatNoiDungBaoHanh() {}
+	public boolean KiemTraBaoHanh() {}
 	
 	@Override
 	public String toString() {
-		return "ChiTietPhieuBaoHanh [maChiTietPBH=" + maChiTietPBH + ", maPhieuBaoHanh=" + maPhieuBaoHanh
+		return "ChiTietPhieuBaoHanh [maPhieuBaoHanh=" + maPhieuBaoHanh
 				+ ", maSanPham=" + maSanPham + ", tinhTrangSanPham=" + tinhTrangSanPham + ", noiDungBaoHanh="
 				+ noiDungBaoHanh + "]";
 	}

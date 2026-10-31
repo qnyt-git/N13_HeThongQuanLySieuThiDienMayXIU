@@ -3,7 +3,6 @@ package ENTITY;
 import java.util.Objects;
 
 public class ChiTietHoaDon {
-    private String maChiTietHD;
     private HoaDon maHoaDon;
     private SanPham maSanPham;
     private int soLuong;
@@ -13,15 +12,12 @@ public class ChiTietHoaDon {
 
     public ChiTietHoaDon(String maChiTietHD, HoaDon maHoaDon, SanPham maSanPham,
                          int soLuong, double donGia) {
-        this.maChiTietHD = maChiTietHD;
         this.maHoaDon = maHoaDon;
         this.maSanPham = maSanPham;
         this.soLuong = soLuong;
         this.donGia = donGia;
     }
 
-    public String getMaChiTietHD() { return maChiTietHD; }
-    public void setMaChiTietHD(String maChiTietHD) { this.maChiTietHD = maChiTietHD; }
     public HoaDon getMaHoaDon() { return maHoaDon; }
     public void setMaHoaDon(HoaDon maHoaDon) { this.maHoaDon = maHoaDon; }
     public SanPham getMaSanPham() { return maSanPham; }
@@ -42,13 +38,11 @@ public class ChiTietHoaDon {
             && maSanPham.getSoLuongTon() >= soLuong;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChiTietHoaDon)) return false;
-        return Objects.equals(maChiTietHD, ((ChiTietHoaDon) o).maChiTietHD);
-    }
+	@Override
+	public String toString() {
+		return "ChiTietHoaDon [maHoaDon=" + maHoaDon + ", maSanPham=" + maSanPham + ", soLuong=" + soLuong + ", donGia="
+				+ donGia + "]";
+	}
 
-    @Override
-    public int hashCode() { return Objects.hash(maChiTietHD); }
+    
 }

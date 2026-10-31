@@ -9,7 +9,7 @@ public class PhieuDatHang {
     private KhachHang maKhachHang;
     private NhanVien maNhanVien;
     private LocalDateTime ngayDatHang;
-    private boolean trangThai;
+    private boolean trangThai; //đã xác nhận / đã hủy
     private String ghiChu;
     private List<ChiTietPhieuDatHang> chiTietList = new ArrayList<>();
 

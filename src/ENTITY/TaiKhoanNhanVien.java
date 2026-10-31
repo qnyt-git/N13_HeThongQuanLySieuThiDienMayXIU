@@ -7,8 +7,8 @@ public class TaiKhoanNhanVien {
     private String tenDangNhap;
     private NhanVien maNhanVien;
     private String matKhau;
-    private LoaiQuyen loaiQuyen;
-    private boolean trangThai;
+    private LoaiQuyen loaiQuyen; // 5quyen: ql, bh, tn, kho, cskh
+    private boolean trangThai; //hoạt động - vô hiệu hóa
 
     public TaiKhoanNhanVien() {}
 

@@ -8,7 +8,7 @@ public class NhaCungCap {
     private String soDienThoai;
     private String diaChi;
     private String email;
-    private boolean trangThai;
+    private boolean trangThai; // còn hợp tác - tạm dừng
 
     public NhaCungCap() {}
 
@@ -61,5 +61,5 @@ public class NhaCungCap {
 
     // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
 
-    public String trangThaiText() { return trangThai ? "Hoạt động" : "Ngừng"; }
+    public String trangThaiText() { return trangThai ? "Hợp tác" : "Tạm ngừng"; }
 }
