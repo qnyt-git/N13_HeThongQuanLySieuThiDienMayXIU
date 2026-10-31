@@ -55,7 +55,12 @@ public class ChiTietPhieuNhapKho {
 			//
 			//
 			//
-	
+	public double thanhTien() { 
+		return soLuong * donGia; 
+		}
+	public boolean hopLe() { 
+		return maSanPham != null && soLuong > 0 && donGia > 0; 
+		}
 	
 	@Override
 	public String toString() {

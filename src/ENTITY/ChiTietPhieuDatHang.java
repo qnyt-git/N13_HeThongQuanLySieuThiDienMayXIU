@@ -1,13 +1,13 @@
 package ENTITY;
 
-public class ChiTieuPhieuDatHang {
+public class ChiTietPhieuDatHang {
 
 	private String maChiTietPDH;
 	private PhieuDatHang maPhieuDatHang;
 	private SanPham maSanPham;
 	private int soLuong;
 	private double donGia;
-	public ChiTieuPhieuDatHang(String maChiTietPDH, PhieuDatHang maPhieuDatHang, SanPham maSanPham, int soLuong,
+	public ChiTietPhieuDatHang(String maChiTietPDH, PhieuDatHang maPhieuDatHang, SanPham maSanPham, int soLuong,
 			double donGia) {
 		super();
 		this.maChiTietPDH = maChiTietPDH;
@@ -55,7 +55,9 @@ public class ChiTieuPhieuDatHang {
 			//
 			//
 			//
-	
+	public double thanhTien() {
+		return soLuong * donGia; 
+		}
 	
 	@Override
 	public String toString() {

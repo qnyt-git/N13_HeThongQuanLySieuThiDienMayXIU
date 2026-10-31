@@ -1,77 +1,74 @@
 package ENTITY;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhieuDatHang {
+    private String maPhieuDatHang;
+    private KhachHang maKhachHang;
+    private NhanVien maNhanVien;
+    private LocalDateTime ngayDatHang;
+    private boolean trangThai;
+    private String ghiChu;
+    private List<ChiTietPhieuDatHang> chiTietList = new ArrayList<>();
 
-	private String maPhieuDatHang;
-	private KhachHang maKhachHang;
-	private NhanVien maNhanVien;
-	private LocalDateTime ngayDatHang;
-	private boolean trangThai; // da xac nhan/da huy dat
-	private String ghiChu;
-	public PhieuDatHang(String maPhieuDatHang, KhachHang maKhachHang, NhanVien maNhanVien, LocalDateTime ngayDatHang,
-			boolean trangThai, String ghiChu) {
-		super();
-		this.maPhieuDatHang = maPhieuDatHang;
-		this.maKhachHang = maKhachHang;
-		this.maNhanVien = maNhanVien;
-		this.ngayDatHang = ngayDatHang;
-		this.trangThai = trangThai;
-		this.ghiChu = ghiChu;
-	}
-	public String getMaPhieuDatHang() {
-		return maPhieuDatHang;
-	}
-	public void setMaPhieuDatHang(String maPhieuDatHang) {
-		this.maPhieuDatHang = maPhieuDatHang;
-	}
-	public KhachHang getMaKhachHang() {
-		return maKhachHang;
-	}
-	public void setMaKhachHang(KhachHang maKhachHang) {
-		this.maKhachHang = maKhachHang;
-	}
-	public NhanVien getMaNhanVien() {
-		return maNhanVien;
-	}
-	public void setMaNhanVien(NhanVien maNhanVien) {
-		this.maNhanVien = maNhanVien;
-	}
-	public LocalDateTime getNgayDatHang() {
-		return ngayDatHang;
-	}
-	public void setNgayDatHang(LocalDateTime ngayDatHang) {
-		this.ngayDatHang = ngayDatHang;
-	}
-	public boolean isTrangThai() {
-		return trangThai;
-	}
-	public void setTrangThai(boolean trangThai) {
-		this.trangThai = trangThai;
-	}
-	public String getGhiChu() {
-		return ghiChu;
-	}
-	public void setGhiChu(String ghiChu) {
-		this.ghiChu = ghiChu;
-	}
-	
-	
-	//thiếu method
-			//
-			//
-			//
-			//
-			//
-			//
-	
-	
-	@Override
-	public String toString() {
-		return "PhieuDatHang [maPhieuDatHang=" + maPhieuDatHang + ", maKhachHang=" + maKhachHang + ", maNhanVien="
-				+ maNhanVien + ", ngayDatHang=" + ngayDatHang + ", trangThai=" + trangThai + ", ghiChu=" + ghiChu + "]";
-	}
-	
-	
+    public PhieuDatHang() {}
+
+    public PhieuDatHang(String maPhieuDatHang, KhachHang maKhachHang, NhanVien maNhanVien,
+                        LocalDateTime ngayDatHang, boolean trangThai, String ghiChu) {
+        this.maPhieuDatHang = maPhieuDatHang;
+        this.maKhachHang = maKhachHang;
+        this.maNhanVien = maNhanVien;
+        this.ngayDatHang = ngayDatHang;
+        this.trangThai = trangThai;
+        this.ghiChu = ghiChu;
+    }
+
+    public String getMaPhieuDatHang() { return maPhieuDatHang; }
+    public void setMaPhieuDatHang(String maPhieuDatHang) { this.maPhieuDatHang = maPhieuDatHang; }
+    public KhachHang getMaKhachHang() { return maKhachHang; }
+    public void setMaKhachHang(KhachHang maKhachHang) { this.maKhachHang = maKhachHang; }
+    public NhanVien getMaNhanVien() { return maNhanVien; }
+    public void setMaNhanVien(NhanVien maNhanVien) { this.maNhanVien = maNhanVien; }
+    public LocalDateTime getNgayDatHang() { return ngayDatHang; }
+    public void setNgayDatHang(LocalDateTime ngayDatHang) { this.ngayDatHang = ngayDatHang; }
+    public boolean isTrangThai() { return trangThai; }
+    public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
+    public String getGhiChu() { return ghiChu; }
+    public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
+    public List<ChiTietPhieuDatHang> getChiTietList() { return chiTietList; }
+    public void setChiTietList(List<ChiTietPhieuDatHang> l) { this.chiTietList = l; }
+
+    // ===== METHOD BỔ SUNG =====
+    public void themChiTiet(ChiTietPhieuDatHang ct) { chiTietList.add(ct); }
+
+    public double tinhTongTien() {
+        double tong = 0;
+        for (ChiTietPhieuDatHang ct : chiTietList) {
+            tong += ct.getSoLuong() * ct.getDonGia();
+        }
+        return tong;
+    }
+
+    public void xacNhan() { this.trangThai = true; }
+    public void huyDat() { this.trangThai = false; }
+    public boolean daXacNhan() { return trangThai; }
+
+    @Override
+    public String toString() { return maPhieuDatHang; }
+
+    // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
+
+    public ChiTietPhieuDatHang taoChiTiet(SanPham sp, int soLuong, double donGia) {
+        ChiTietPhieuDatHang ct = new ChiTietPhieuDatHang(maPhieuDatHang + "-" + sp.getMaSanPham(), this, sp, soLuong, donGia);
+        themChiTiet(ct);
+        return ct;
+    }
+
+    /** Nhãn trạng thái; entity chỉ có boolean nên "Đã giao" được suy ra từ việc đã lập hóa đơn. */
+    public String trangThaiText(boolean daLapHoaDon) {
+        if (daLapHoaDon) return "Đã giao";
+        return trangThai ? "Đã xác nhận" : "Chờ xử lý";
+    }
 }

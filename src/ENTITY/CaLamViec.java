@@ -3,78 +3,76 @@ package ENTITY;
 import java.time.LocalDateTime;
 
 public class CaLamViec {
+    private String maCa;
+    private String tenCa;
+    private NhanVien maNhanVien;
+    private LocalDateTime gioBatDau;
+    private LocalDateTime gioKetThuc;
 
-	private String maCa;
-	private String tenCa;
-	private PhanCa maPhanCa;
-	private NhanVien maNhanVien;
-	private LocalDateTime gioBatDau;
-	private LocalDateTime gioKetThuc;
-	public CaLamViec(String maCa, String tenCa, PhanCa maPhanCa, NhanVien maNhanVien, LocalDateTime gioBatDau,
-			LocalDateTime gioKetThuc) {
-		super();
-		this.maCa = maCa;
-		this.tenCa = tenCa;
-		this.maPhanCa = maPhanCa;
-		this.maNhanVien = maNhanVien;
-		this.gioBatDau = gioBatDau;
-		this.gioKetThuc = gioKetThuc;
-	}
-	public String getMaCa() {
-		return maCa;
-	}
-	public void setMaCa(String maCa) {
-		this.maCa = maCa;
-	}
-	public String getTenCa() {
-		return tenCa;
-	}
-	public void setTenCa(String tenCa) {
-		this.tenCa = tenCa;
-	}
-	public PhanCa getMaPhanCa() {
-		return maPhanCa;
-	}
-	public void setMaPhanCa(PhanCa maPhanCa) {
-		this.maPhanCa = maPhanCa;
-	}
-	public NhanVien getMaNhanVien() {
-		return maNhanVien;
-	}
-	public void setMaNhanVien(NhanVien maNhanVien) {
-		this.maNhanVien = maNhanVien;
-	}
-	public LocalDateTime getGioBatDau() {
-		return gioBatDau;
-	}
-	public void setGioBatDau(LocalDateTime gioBatDau) {
-		this.gioBatDau = gioBatDau;
-	}
-	public LocalDateTime getGioKetThuc() {
-		return gioKetThuc;
-	}
-	public void setGioKetThuc(LocalDateTime gioKetThuc) {
-		this.gioKetThuc = gioKetThuc;
-	}
-	
-	
-	
-	
-	//thiếu method
-		//
-		//
-		//
-		//
-		//
-		//
-	
-	
+    public CaLamViec() {}
 
-	@Override
-	public String toString() {
-		return "CaLamViec [maCa=" + maCa + ", tenCa=" + tenCa + ", maPhanCa=" + maPhanCa + ", maNhanVien=" + maNhanVien
-				+ ", gioBatDau=" + gioBatDau + ", gioKetThuc=" + gioKetThuc + "]";
-	}
-	
+    public CaLamViec(String maCa, String tenCa, NhanVien maNhanVien,
+                     LocalDateTime gioBatDau, LocalDateTime gioKetThuc) {
+        this.maCa = maCa;
+        this.tenCa = tenCa;
+        this.maNhanVien = maNhanVien;
+        this.gioBatDau = gioBatDau;
+        this.gioKetThuc = gioKetThuc;
+    }
 
+    public String getMaCa() { return maCa; }
+    public void setMaCa(String maCa) { this.maCa = maCa; }
+    public String getTenCa() { return tenCa; }
+    public void setTenCa(String tenCa) { this.tenCa = tenCa; }
+    public NhanVien getMaNhanVien() { return maNhanVien; }
+    public void setMaNhanVien(NhanVien maNhanVien) { this.maNhanVien = maNhanVien; }
+    public LocalDateTime getGioBatDau() { return gioBatDau; }
+    public void setGioBatDau(LocalDateTime gioBatDau) { this.gioBatDau = gioBatDau; }
+    public LocalDateTime getGioKetThuc() { return gioKetThuc; }
+    public void setGioKetThuc(LocalDateTime gioKetThuc) { this.gioKetThuc = gioKetThuc; }
+
+    // ===== METHOD BỔ SUNG =====
+    /** Kiểm tra giờ kết thúc > giờ bắt đầu */
+    public boolean hopLe() {
+        return gioBatDau != null && gioKetThuc != null
+            && gioKetThuc.isAfter(gioBatDau);
+    }
+
+    /** Thời lượng ca (phút) */
+    public long thoiLuongPhut() {
+        if (!hopLe()) return 0;
+        return java.time.Duration.between(gioBatDau, gioKetThuc).toMinutes();
+    }
+
+    /** Kiểm tra 1 thời điểm có nằm trong ca */
+    public boolean trongCa(LocalDateTime thoiDiem) {
+        return thoiDiem != null
+            && !thoiDiem.isBefore(gioBatDau)
+            && !thoiDiem.isAfter(gioKetThuc);
+    }
+
+    @Override
+    public String toString() { return tenCa; }
+
+    // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
+
+    private static final java.time.format.DateTimeFormatter GIO = java.time.format.DateTimeFormatter.ofPattern("HH:mm");
+
+    public String gioBatDauText() { return gioBatDau == null ? "" : gioBatDau.format(GIO); }
+
+    public String gioKetThucText() { return gioKetThuc == null ? "" : gioKetThuc.format(GIO); }
+
+    /** Đặt giờ bắt đầu/kết thúc theo ngày hôm nay (ca làm việc chỉ quan tâm giờ). */
+    public void datGio(java.time.LocalTime batDau, java.time.LocalTime ketThuc) {
+        java.time.LocalDate ngay = java.time.LocalDate.now();
+        this.gioBatDau = ngay.atTime(batDau);
+        this.gioKetThuc = ngay.atTime(ketThuc);
+    }
+
+    /** Ca làm phải nằm trong khung 06:00 - 23:00. */
+    public boolean trongKhungGioChoPhep() {
+        return gioBatDau != null && gioKetThuc != null
+            && !gioBatDau.toLocalTime().isBefore(java.time.LocalTime.of(6, 0))
+            && !gioKetThuc.toLocalTime().isAfter(java.time.LocalTime.of(23, 0));
+    }
 }

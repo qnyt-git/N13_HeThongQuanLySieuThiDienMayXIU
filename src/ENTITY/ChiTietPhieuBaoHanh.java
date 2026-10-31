@@ -55,7 +55,10 @@ public class ChiTietPhieuBaoHanh {
 			//
 			//
 			//
-	
+	public boolean hopLe() {
+	    return maSanPham != null && tinhTrangSanPham != null && !tinhTrangSanPham.isEmpty()
+	        && noiDungBaoHanh != null && !noiDungBaoHanh.isEmpty();
+	}
 	
 	@Override
 	public String toString() {
