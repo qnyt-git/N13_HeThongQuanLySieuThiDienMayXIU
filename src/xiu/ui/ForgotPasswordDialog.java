@@ -3,7 +3,6 @@ package xiu.ui;
 import DAO.*;
 import ENTITY.*;
 import xiu.common.*;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
