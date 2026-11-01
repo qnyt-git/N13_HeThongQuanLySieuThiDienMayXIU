@@ -57,7 +57,7 @@ public class LichSuMuaHangPanel extends JPanel implements Refreshable {
         for (KhachHang x : new KhachHangDAO().getAll())
             if (x.getMaKhachHang().equalsIgnoreCase(k) || x.getSoDienThoai().equals(k)) { kh = x; break; }
         if (kh == null) { lbInfo.setText("Không tìm thấy khách hàng \"" + k + "\""); lbSum.setText(" "); return; }
-        lbInfo.setText(kh.getMaKhachHang() + " - " + kh.getHoTenKhachHang() + "   |   " + kh.getSoDienThoai() + "   |   " + kh.getDiaChi());
+        lbInfo.setText(kh.getMaKhachHang() + " - " + kh.getHoTenKhachHang() + "   |   " + kh.getSoDienThoai());
         double sum = 0; int n = 0;
         for (HoaDon h : new HoaDonDAO().getAll()) {
             if (!h.getMaKhachHang().equals(kh)) continue;

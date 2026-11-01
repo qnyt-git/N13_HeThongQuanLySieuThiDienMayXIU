@@ -25,16 +25,45 @@ public class ForgotPasswordDialog extends JDialog {
         JButton ok = Theme.primary("Đặt lại mật khẩu"), cancel = Theme.ghost("Quay lại đăng nhập");
         cancel.addActionListener(e -> dispose());
         ok.addActionListener(e -> {
-            TaiKhoanNhanVienDAO dao = new TaiKhoanNhanVienDAO();
-            TaiKhoanNhanVien tk = dao.timTheoTenDangNhap(tfUser.getText().trim());
-            if (tk == null) { err.setText("Tên đăng nhập không tồn tại"); return; }
-            String b = new String(pf2.getPassword());
-            if (!new String(pf1.getPassword()).equals(b)) { err.setText("Mật khẩu nhập lại không khớp"); return; }
-            String loi = tk.datLaiMatKhau(tfPhone.getText().trim(), b);     // xác thực SĐT + kiểm tra độ dài trong entity
-            if (loi != null) { err.setText(loi); return; }
-            if (!dao.capNhat(tk)) { err.setText("Không lưu được mật khẩu mới"); return; }
-            JOptionPane.showMessageDialog(this, "Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
+            try {
+                TaiKhoanNhanVienDAO dao = new TaiKhoanNhanVienDAO();
+                TaiKhoanNhanVien tk = dao.timTheoTenDangNhap(tfUser.getText().trim());
+
+                if (tk == null) {
+                    err.setText("Tên đăng nhập không tồn tại");
+                    return;
+                }
+
+                String b = new String(pf2.getPassword());
+
+                if (!new String(pf1.getPassword()).equals(b)) {
+                    err.setText("Mật khẩu nhập lại không khớp");
+                    return;
+                }
+
+                String loi = tk.datLaiMatKhau(tfPhone.getText().trim(), b);
+
+                if (loi != null) {
+                    err.setText(loi);
+                    return;
+                }
+
+                if (!dao.capNhat(tk)) {
+                    err.setText("Không lưu được mật khẩu mới");
+                    return;
+                }
+
+                JOptionPane.showMessageDialog(this,
+                        "Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.",
+                        "Thành công",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                dispose();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                err.setText("Lỗi khi tìm tài khoản hoặc cập nhật mật khẩu");
+            }
         });
         JPanel south = new JPanel(new BorderLayout()); south.setBackground(Color.WHITE); south.setBorder(new EmptyBorder(0, 22, 16, 22));
         JPanel bt = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0)); bt.setBackground(Color.WHITE); bt.add(cancel); bt.add(ok);
