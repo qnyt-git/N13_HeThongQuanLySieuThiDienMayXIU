@@ -92,7 +92,7 @@ public class BanHangPanel extends JPanel implements Refreshable {
 
     private void confirmPhieu() {
         PhieuDatHang p = selectedPhieu(true); if (p == null) return;
-        if (p.isTrangThai()) { warn("Phiếu này đã được xác nhận"); return; }
+        if (p.daXacNhan()) { warn("Phiếu này đã được xác nhận"); return; }
         p.xacNhan(); pdhDao.capNhat(p); reload();
     }
 
@@ -108,7 +108,7 @@ public class BanHangPanel extends JPanel implements Refreshable {
     /** Nghiệp vụ: phiếu đã xác nhận, chưa có hóa đơn -> chuyển sang tab bán hàng với giỏ hàng lấy từ phiếu. */
     private void payPhieu() {
         PhieuDatHang p = selectedPhieu(true); if (p == null) return;
-        if (!p.isTrangThai()) { warn("Phiếu chưa được xác nhận, hãy xác nhận trước khi thanh toán"); return; }
+        if (!p.daXacNhan()) { warn("Phiếu chưa được xác nhận, hãy xác nhận trước khi thanh toán"); return; }
         if (hdDao.timTheoPhieuDat(p) != null) { warn("Phiếu này đã được thanh toán"); return; }
         banHang.chonPhieu(p);
         tabs.setSelectedIndex(0);
