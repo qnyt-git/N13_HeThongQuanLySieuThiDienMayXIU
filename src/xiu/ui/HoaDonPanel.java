@@ -2,16 +2,13 @@ package xiu.ui;
 
 import ENTITY.*;
 import xiu.common.*;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-
 import ENUM.*;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
