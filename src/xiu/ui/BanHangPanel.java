@@ -208,7 +208,9 @@ public class BanHangPanel extends JPanel implements Refreshable {
         pdhModel.setRowCount(0);
         for (PhieuDatHang p : dsPdh)
             pdhModel.addRow(new Object[]{p.getMaPhieuDatHang(), Fmt.dateTime(p.getNgayDatHang()), p.getMaKhachHang(), p.getMaNhanVien(),
-                    p.tinhTongTien(), p.trangThaiText(hdDao.timTheoPhieuDat(p) != null), p.getGhiChu() == null ? "" : p.getGhiChu()});
+            		p.tinhTongTien(),
+            		p.trangThaiText(),
+            		p.getGhiChu() == null ? "" : p.getGhiChu()});
     }
 
     @Override public void refresh() { banHang.refresh(); datHang.refresh(); reload(); }

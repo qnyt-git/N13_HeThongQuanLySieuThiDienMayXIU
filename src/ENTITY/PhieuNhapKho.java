@@ -76,8 +76,12 @@ public class PhieuNhapKho {
 
     // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
 
-    public ChiTietPhieuNhapKho taoChiTiet(SanPham sp, int soLuong, double donGia) {
-        ChiTietPhieuNhapKho ct = new ChiTietPhieuNhapKho(maPhieuNhapKho + "-" + sp.getMaSanPham(), this, sp, soLuong, donGia);
+    public ChiTietPhieuNhapKho taoChiTiet(
+            SanPham sp, int soLuong, double donGia) {
+
+        ChiTietPhieuNhapKho ct = new ChiTietPhieuNhapKho(
+                this, sp, soLuong, donGia);
+
         themChiTiet(ct);
         return ct;
     }

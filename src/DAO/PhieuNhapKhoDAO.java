@@ -57,14 +57,13 @@ public class PhieuNhapKhoDAO implements IDAO<PhieuNhapKho> {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                ds.add(new PhieuNhapKho(
-                        rs.getString("maPhieuNhapKho"),
-                        toLdt(rs.getTimestamp("ngayNhap")),
-                        nv.get(rs.getString("maNhanVien")),
-                        ncc.get(rs.getString("maNCC")),
-                        rs.getString("lyDoNhap"),
-                        docTrangThai(rs.getString("trangThai")),
-                        rs.getString("ghiChu")));
+            	ds.add(new PhieuNhapKho(
+            	        rs.getString("maPhieuNhapKho"),
+            	        toLdt(rs.getTimestamp("ngayNhap")),
+            	        nv.get(rs.getString("maNhanVien")),
+            	        ncc.get(rs.getString("maNCC")),
+            	        rs.getString("lyDoNhap"),
+            	        docTrangThai(rs.getString("trangThai"))));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,21 +72,23 @@ public class PhieuNhapKhoDAO implements IDAO<PhieuNhapKho> {
         Map<String, PhieuNhapKho> idx = new HashMap<>();
         for (PhieuNhapKho p : ds) idx.put(p.getMaPhieuNhapKho(), p);
 
-        String sqlCt = "SELECT maChiTietPNK, maPhieuNhapKho, maSanPham, soLuong, donGia "
-                + "FROM ChiTietPhieuNhapKho ORDER BY maChiTietPNK";
+        String sqlCt = "SELECT maPhieuNhapKho, maSanPham, soLuong, donGia "
+                + "FROM ChiTietPhieuNhapKho ORDER BY maPhieuNhapKho, maSanPham";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sqlCt);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                PhieuNhapKho p = idx.get(rs.getString("maPhieuNhapKho"));
-                SanPham s = sp.get(rs.getString("maSanPham"));
-                if (p != null && s != null) {
-                    p.themChiTiet(new ChiTietPhieuNhapKho(
-                            rs.getString("maChiTietPNK"), p, s,
-                            rs.getInt("soLuong"), rs.getDouble("donGia")));
-                }
-            }
+        	while (rs.next()) {
+        	    PhieuNhapKho p = idx.get(rs.getString("maPhieuNhapKho"));
+        	    SanPham s = sp.get(rs.getString("maSanPham"));
+
+        	    if (p != null && s != null) {
+        	        p.themChiTiet(new ChiTietPhieuNhapKho(
+        	                p, s,
+        	                rs.getInt("soLuong"),
+        	                rs.getDouble("donGia")));
+        	    }
+        	}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,30 +115,24 @@ public class PhieuNhapKhoDAO implements IDAO<PhieuNhapKho> {
     }
 
     /** Mã dòng chi tiết do entity tạo ("PNK001-SP001") dài hơn VARCHAR(10), nên DAO cấp mã ngắn CTPNK00001... */
-    private int soChiTietLonNhat(Connection con) throws Exception {
-        String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maChiTietPNK, 6, 10) AS INT)) FROM ChiTietPhieuNhapKho";
-        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            return rs.next() ? rs.getInt(1) : 0;
-        }
-    }
 
     private boolean themChiTiet(Connection con, PhieuNhapKho p) {
-        String sql = "INSERT INTO ChiTietPhieuNhapKho(maChiTietPNK, maPhieuNhapKho, maSanPham, soLuong, donGia) "
-                + "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ChiTietPhieuNhapKho("
+                + "maPhieuNhapKho, maSanPham, soLuong, donGia) "
+                + "VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            int so = soChiTietLonNhat(con);
             for (ChiTietPhieuNhapKho ct : p.getChiTietList()) {
-                ct.setMaChiTietPNK(String.format("CTPNK%05d", ++so));
-                ps.setString(1, ct.getMaChiTietPNK());
-                ps.setString(2, p.getMaPhieuNhapKho());
-                ps.setString(3, ct.getMaSanPham().getMaSanPham());
-                ps.setInt(4, ct.getSoLuong());
-                ps.setDouble(5, ct.getDonGia());
+                ps.setString(1, p.getMaPhieuNhapKho());
+                ps.setString(2, ct.getMaSanPham().getMaSanPham());
+                ps.setInt(3, ct.getSoLuong());
+                ps.setDouble(4, ct.getDonGia());
                 ps.addBatch();
             }
+
             ps.executeBatch();
             return true;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;

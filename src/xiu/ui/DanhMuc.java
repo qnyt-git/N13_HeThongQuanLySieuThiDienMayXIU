@@ -109,18 +109,17 @@ public final class DanhMuc {
     // ---------------- Sản phẩm ----------------
     public static CrudPanel<SanPham> sanPham() {
         return new CrudPanel<>("Quản lý sản phẩm", new SanPhamDAO(),
-                new String[]{"Mã SP", "Tên sản phẩm", "Mã vạch", "Giá bán", "Số lượng tồn", "Bảo hành (tháng)", "Trạng thái"},
-                s -> new Object[]{s.getMaSanPham(), s.getTenSanPham(), s.getMaVach(), s.getGiaBan(), s.getSoLuongTon(), s.baoHanhThang(), s.getTrangThai()},
+                new String[]{"Mã SP", "Tên sản phẩm", "Giá bán", "Số lượng tồn", "Bảo hành (tháng)", "Trạng thái"},
+                s -> new Object[]{s.getMaSanPham(), s.getTenSanPham(), s.getGiaBan(), s.getSoLuongTon(), s.baoHanhThang(), s.getTrangThai()},
                 List.of(F.of("Tên sản phẩm", Kind.TEXT).regex("^[\\p{L}\\d .,\\-/()]+$", "Tên sản phẩm chứa ký tự không hợp lệ"),
-                        F.of("Mã vạch", Kind.TEXT).regex("^\\d{8,13}$", "Mã vạch gồm 8-13 chữ số"),
                         F.of("Giá bán (đ)", Kind.MONEY),
                         F.of("Số lượng tồn", Kind.INT_NONNEG),
                         F.of("Bảo hành (tháng)", Kind.INT_NONNEG),
                         F.of("Trạng thái", Kind.COMBO).opts((Object[]) TrangThaiSanPham.values())),
                 id -> { SanPham s = new SanPham(); s.setMaSanPham(id); return s; },
                 (s, v) -> {
-                    s.setTenSanPham((String) v[1]); s.setMaVach((String) v[2]); s.setGiaBan((Long) v[3]);
-                    s.setSoLuongTon((Integer) v[4]); s.datBaoHanhThang((Integer) v[5]); s.setTrangThai((TrangThaiSanPham) v[6]);
+                    s.setTenSanPham((String) v[1]); s.setGiaBan((Long) v[2]);
+                    s.setSoLuongTon((Integer) v[3]); s.datBaoHanhThang((Integer) v[4]); s.setTrangThai((TrangThaiSanPham) v[5]);
                 }) {
             @Override protected String validateRow(Object[] v, SanPham e) {
                 return dup(2, v[2], e) ? "Mã vạch đã tồn tại" : null;
@@ -137,8 +136,8 @@ public final class DanhMuc {
     // ---------------- Khách hàng ----------------
     public static CrudPanel<KhachHang> khachHang() {
         return new CrudPanel<>("Quản lý khách hàng", new KhachHangDAO(),
-                new String[]{"Mã KH", "Họ tên", "Số điện thoại", "Địa chỉ", "Điểm tích lũy", "Loại khách hàng"},
-                k -> new Object[]{k.getMaKhachHang(), k.getHoTenKhachHang(), k.getSoDienThoai(), k.getDiaChi(), k.getDiemTichLuy(), k.getLoaiKH()},
+                new String[]{"Mã KH", "Họ tên", "Số điện thoại", "Điểm tích lũy", "Loại khách hàng"},
+                k -> new Object[]{k.getMaKhachHang(), k.getHoTenKhachHang(), k.getSoDienThoai(), k.getDiemTichLuy(), k.getLoaiKH()},
                 List.of(F.of("Họ tên", Kind.NAME),
                         F.of("Số điện thoại", Kind.PHONE),
                         F.of("Địa chỉ", Kind.TEXT),
@@ -146,8 +145,8 @@ public final class DanhMuc {
                         F.of("Loại khách hàng", Kind.COMBO).opts((Object[]) LoaiKhachHang.values())),
                 id -> { KhachHang k = new KhachHang(); k.setMaKhachHang(id); return k; },
                 (k, v) -> {
-                    k.setHoTenKhachHang((String) v[1]); k.setSoDienThoai((String) v[2]); k.setDiaChi((String) v[3]);
-                    k.setDiemTichLuy((Integer) v[4]); k.setLoaiKH((LoaiKhachHang) v[5]);
+                    k.setHoTenKhachHang((String) v[1]); k.setSoDienThoai((String) v[2]);
+                    k.setDiemTichLuy((Integer) v[3]); k.setLoaiKH((LoaiKhachHang) v[4]);
                 }) {
             @Override protected String validateRow(Object[] v, KhachHang e) {
                 return dup(2, v[2], e) ? "Số điện thoại đã tồn tại" : null;
@@ -189,7 +188,7 @@ public final class DanhMuc {
         return new CrudPanel<>("Chương trình khuyến mãi", new KhuyenMaiDAO(),
                 new String[]{"Mã KM", "Tên khuyến mãi", "Giá trị giảm (%)", "Ngày bắt đầu", "Ngày kết thúc", "Ghi chú", "Trạng thái"},
                 k -> new Object[]{k.getMaKhuyenMai(), k.getTenKhuyenMai(), (int) k.getGiaTriGiam(), Fmt.date(k.getThoiGianBatDau()),
-                        Fmt.date(k.getThoiGianKetThuc()), k.getGhiChu() == null ? "" : k.getGhiChu(), k.trangThaiText()},
+                        Fmt.date(k.getThoiGianKetThuc()), k.trangThaiText()},
                 List.of(F.of("Tên khuyến mãi", Kind.NAME),
                         F.of("Giá trị giảm (%)", Kind.INT_POS),
                         F.of("Ngày bắt đầu", Kind.DATE).def(() -> Fmt.date(LocalDate.now())),
@@ -200,7 +199,7 @@ public final class DanhMuc {
                 (k, v) -> {
                     k.setTenKhuyenMai((String) v[1]); k.setGiaTriGiam((Integer) v[2]);
                     k.datThoiGian(Fmt.parseDate((String) v[3]), Fmt.parseDate((String) v[4]));
-                    k.setGhiChu((String) v[5]); k.setTrangThai(AD.equals(v[6]));
+                    k.setTrangThai(AD.equals(v[5]));
                 }) {
             @Override protected String validateRow(Object[] v, KhuyenMai e) {
                 if ((Integer) v[2] > 100) return "Giá trị giảm không được vượt quá 100%";

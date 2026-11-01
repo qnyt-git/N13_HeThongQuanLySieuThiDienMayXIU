@@ -1,6 +1,7 @@
 package ENUM;
 
 public enum TrangThaiPhieuDatHang {
+	CHO_XU_LY("Chờ xử lý"),
 	DA_XAC_NHAN("Đã xác nhận"),
 	DA_HOAN_THANH("Đã hoàn thành"),
 	DA_HUY("Đã hủy");

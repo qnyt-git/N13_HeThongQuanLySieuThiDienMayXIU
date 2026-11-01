@@ -133,22 +133,27 @@ public class HoaDonDAO implements IDAO<HoaDon> {
         Map<String, HoaDon> idx = new HashMap<>();
         for (HoaDon h : ds) idx.put(h.getMaHoaDon(), h);
 
-        String sqlCt = "SELECT maChiTietHD, maHoaDon, maSanPham, soLuong, donGia FROM ChiTietHoaDon ";
-        if (dieuKien != null) sqlCt += "WHERE maHoaDon IN (SELECT maHoaDon FROM HoaDon " + dieuKien + ") ";
-        sqlCt += "ORDER BY maChiTietHD";
+        String sqlCt = "SELECT maHoaDon, maSanPham, soLuong, donGia FROM ChiTietHoaDon ";
+        if (dieuKien != null) {
+            sqlCt += "WHERE maHoaDon IN (SELECT maHoaDon FROM HoaDon " + dieuKien + ") ";
+        }
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sqlCt)) {
             if (dieuKien != null) ps.setString(1, thamSo);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    HoaDon h = idx.get(rs.getString("maHoaDon"));
-                    SanPham s = sp.get(rs.getString("maSanPham"));
-                    if (h != null && s != null) {
-                        h.themChiTiet(new ChiTietHoaDon(
-                                rs.getString("maChiTietHD"), h, s,
-                                rs.getInt("soLuong"), rs.getDouble("donGia")));
-                    }
-                }
+            	while (rs.next()) {
+            	    HoaDon h = idx.get(rs.getString("maHoaDon"));
+            	    SanPham s = sp.get(rs.getString("maSanPham"));
+
+            	    if (h != null && s != null) {
+            	        h.themChiTiet(new ChiTietHoaDon(
+            	                h,
+            	                s,
+            	                rs.getInt("soLuong"),
+            	                rs.getDouble("donGia")
+            	        ));
+            	    }
+            	}
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,17 +194,15 @@ public class HoaDonDAO implements IDAO<HoaDon> {
     }
 
     private boolean themChiTiet(Connection con, HoaDon h) {
-        String sql = "INSERT INTO ChiTietHoaDon(maChiTietHD, maHoaDon, maSanPham, soLuong, donGia) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ChiTietHoaDon(maHoaDon, maSanPham, soLuong, donGia) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             int so = soChiTietLonNhat(con);
             for (ChiTietHoaDon ct : h.getChiTietList()) {
-                ct.setMaChiTietHD(String.format("CTHD%05d", ++so));
-                ps.setString(1, ct.getMaChiTietHD());
-                ps.setString(2, h.getMaHoaDon());
-                ps.setString(3, ct.getMaSanPham().getMaSanPham());
-                ps.setInt(4, ct.getSoLuong());
-                ps.setDouble(5, ct.getDonGia());
+                ps.setString(1, h.getMaHoaDon());
+                ps.setString(2, ct.getMaSanPham().getMaSanPham());
+                ps.setInt(3, ct.getSoLuong());
+                ps.setDouble(4, ct.getDonGia());
                 ps.addBatch();
             }
             ps.executeBatch();

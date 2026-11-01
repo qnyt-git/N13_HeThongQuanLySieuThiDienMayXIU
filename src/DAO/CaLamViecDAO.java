@@ -33,7 +33,6 @@ public class CaLamViecDAO implements IDAO<CaLamViec> {
                 ds.add(new CaLamViec(
                         rs.getString("maCa"),
                         rs.getString("tenCa"),
-                        null,
                         toLdt(rs.getTimestamp("gioBatDau")),
                         toLdt(rs.getTimestamp("gioKetThuc"))));
             }

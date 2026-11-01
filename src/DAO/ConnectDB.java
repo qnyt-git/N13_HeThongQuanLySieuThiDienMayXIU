@@ -13,7 +13,7 @@ public class ConnectDB {
 				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
 				String url = "jdbc:sqlserver://localhost:1433;"
-						+ "databaseName=XIU_Store;"
+						+ "databaseName=XIU_Store_DB;"
 						+ "encrypt=false;"
 						+ "trustServerCertificate=true";
 

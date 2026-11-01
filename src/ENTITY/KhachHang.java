@@ -11,8 +11,7 @@ public class KhachHang {
     
     public KhachHang() {}
 
-	public KhachHang(String maKhachHang, String hoTenKhachHang, String soDienThoai, String diaChi, int diemTichLuy,
-			LoaiKhachHang loaiKH) {
+	public KhachHang(String maKhachHang, String hoTenKhachHang, String soDienThoai, int diemTichLuy, LoaiKhachHang loaiKH) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.hoTenKhachHang = hoTenKhachHang;

@@ -12,7 +12,7 @@ public class SanPham {
 
     public SanPham() {}
 
-    public SanPham(String maSanPham, String tenSanPham, String maVach, double giaBan,
+    public SanPham(String maSanPham, String tenSanPham, double giaBan,
                    int soLuongTon, String thoiHanBaoHanh, TrangThaiSanPham trangThai) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
@@ -39,8 +39,7 @@ public class SanPham {
     /** Kiểm tra còn hàng để bán */
     public boolean conHang() {
         return soLuongTon > 0
-            && trangThai != TrangThaiSanPham.HET_HANG
-            && trangThai != TrangThaiSanPham.VO_HIEU_HOA;
+            && trangThai != TrangThaiSanPham.HET_HANG;
     }
 
     /** Cập nhật tồn kho (nhập thêm) */
@@ -48,7 +47,7 @@ public class SanPham {
         if (soLuong <= 0) throw new IllegalArgumentException("Số lượng nhập phải > 0");
         this.soLuongTon += soLuong;
         if (this.trangThai == TrangThaiSanPham.HET_HANG) {
-            this.trangThai = TrangThaiSanPham.CON_HANG;
+            this.trangThai = TrangThaiSanPham.CON_BAN;
         }
     }
 
@@ -65,8 +64,7 @@ public class SanPham {
 
     /** Kiểm tra có đang bán được không */
     public boolean coTheBan() {
-        return trangThai == TrangThaiSanPham.CON_BAN
-            || trangThai == TrangThaiSanPham.CON_HANG;
+        return trangThai == TrangThaiSanPham.CON_BAN;
     }
 
     @Override

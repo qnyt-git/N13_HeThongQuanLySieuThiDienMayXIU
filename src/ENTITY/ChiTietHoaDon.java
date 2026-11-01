@@ -10,7 +10,7 @@ public class ChiTietHoaDon {
 
     public ChiTietHoaDon() {}
 
-    public ChiTietHoaDon(String maChiTietHD, HoaDon maHoaDon, SanPham maSanPham,
+    public ChiTietHoaDon(HoaDon maHoaDon, SanPham maSanPham,
                          int soLuong, double donGia) {
         this.maHoaDon = maHoaDon;
         this.maSanPham = maSanPham;

@@ -63,8 +63,8 @@ public class DashboardPanel extends JPanel implements Refreshable {
         for (SanPham s : new SanPhamDAO().getAll()) if (s.sapHetHang(10)) low++;
         int pdh = 0, pnk = 0, bh = 0, bad = 0;
         for (PhieuDatHang p : new PhieuDatHangDAO().getAll()) if (!p.daXacNhan()) pdh++;
-        for (PhieuNhapKho p : new PhieuNhapKhoDAO().getAll()) if (p.getTrangThai() == TrangThaiPhieuNhapKho.CHO_DUYET) pnk++;
-        for (PhieuBaoHanh p : new PhieuBaoHanhDAO().getAll()) if (p.getTrangThai() == TrangThaiPhieuBaoHanh.DANG_XU_LY) bh++;
+        for (PhieuNhapKho p : new PhieuNhapKhoDAO().getAll()) if (p.getTrangThai() == TrangThaiPhieuNhapKho.DA_XAC_NHAN) pnk++;
+        for (PhieuBaoHanh p : new PhieuBaoHanhDAO().getAll()) if (p.getTrangThai() == TrangThaiPhieuBaoHanh.DA_XAC_NHAN) bh++;
         for (KhachHang k : new KhachHangDAO().getAll())
             if (k.getLoaiKH() == LoaiKhachHang.KH_VIP) bad++;
         lbPdh.setText(String.valueOf(pdh)); lbPnk.setText(String.valueOf(pnk)); lbBh.setText(String.valueOf(bh)); lbBad.setText(String.valueOf(bad));

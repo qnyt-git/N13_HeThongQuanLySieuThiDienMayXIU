@@ -19,9 +19,11 @@ public class NhanVienDAO implements IDAO<NhanVien> {
         return new NhanVien(
                 rs.getString("maNhanVien"),
                 rs.getString("hoTenNhanVien"),
+                rs.getBoolean("gioiTinh"),
                 rs.getString("chucVu"),
                 rs.getString("soDienThoai"),
                 ns == null ? null : ns.toLocalDate(),
+                rs.getString("trinhDoHocVan"),
                 rs.getFloat("heSoLuong"),
                 rs.getInt("luongCoBan"),
                 rs.getBoolean("trangThai"));
@@ -34,7 +36,7 @@ public class NhanVienDAO implements IDAO<NhanVien> {
     @Override
     public List<NhanVien> getAll() {
         List<NhanVien> ds = new ArrayList<>();
-        String sql = "SELECT maNhanVien, hoTenNhanVien, chucVu, soDienThoai, ngaySinh, heSoLuong, luongCoBan, trangThai "
+        String sql = "SELECT maNhanVien, hoTenNhanVien, gioiTinh, chucVu, soDienThoai, ngaySinh, trinhDoHocVan, heSoLuong, luongCoBan, trangThai "
                 + "FROM NhanVien ORDER BY maNhanVien";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
@@ -50,35 +52,38 @@ public class NhanVienDAO implements IDAO<NhanVien> {
     }
 
     /** Tìm nhân viên theo mã; null nếu không có. */
-    public NhanVien timTheoMa(String maNhanVien) {
-        String sql = "SELECT maNhanVien, hoTenNhanVien, chucVu, soDienThoai, ngaySinh, heSoLuong, luongCoBan, trangThai "
+    public NhanVien timTheoMa(String maNhanVien) throws SQLException {
+        String sql = "SELECT maNhanVien, hoTenNhanVien, gioiTinh, chucVu, soDienThoai, ngaySinh, trinhDoHocVan, heSoLuong, luongCoBan, trangThai "
                 + "FROM NhanVien WHERE maNhanVien = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, maNhanVien);
+
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapNhanVien(rs);
+                if (rs.next()) {
+                    return mapNhanVien(rs);
+                }
+                return null;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
     }
 
     @Override
     public boolean them(NhanVien n) {
-        String sql = "INSERT INTO NhanVien(maNhanVien, hoTenNhanVien, chucVu, soDienThoai, ngaySinh, heSoLuong, "
-                + "luongCoBan, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO NhanVien(maNhanVien, hoTenNhanVien, gioiTinh, chucVu, soDienThoai, ngaySinh, trinhDoHocVan, heSoLuong, "
+                + "luongCoBan, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, n.getMaNhanVien());
             ps.setString(2, n.getHoTenNhanVien());
-            ps.setString(3, n.getChucVu());
-            ps.setString(4, n.getSoDienThoai());
-            ps.setDate(5, toSqlDate(n));
-            ps.setDouble(6, n.getHeSoLuong());
-            ps.setInt(7, n.getLuongCoBan());
-            ps.setBoolean(8, n.isTrangThai());
+            ps.setBoolean(3, n.isGioiTinh());
+            ps.setString(4, n.getChucVu());
+            ps.setString(5, n.getSoDienThoai());
+            ps.setDate(6, toSqlDate(n));
+            ps.setString(7, n.getTrinhDoHocVan());
+            ps.setDouble(8, n.getHeSoLuong());
+            ps.setInt(9, n.getLuongCoBan());
+            ps.setBoolean(10, n.isTrangThai());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,18 +93,20 @@ public class NhanVienDAO implements IDAO<NhanVien> {
 
     @Override
     public boolean capNhat(NhanVien n) {
-        String sql = "UPDATE NhanVien SET hoTenNhanVien = ?, chucVu = ?, soDienThoai = ?, ngaySinh = ?, "
-                + "heSoLuong = ?, luongCoBan = ?, trangThai = ? WHERE maNhanVien = ?";
+        String sql = "UPDATE NhanVien SET hoTenNhanVien = ?, gioiTinh = ?, chucVu = ?, soDienThoai = ?, ngaySinh = ?, "
+                + "trinhDoHocVan = ?, heSoLuong = ?, luongCoBan = ?, trangThai = ? WHERE maNhanVien = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, n.getHoTenNhanVien());
-            ps.setString(2, n.getChucVu());
-            ps.setString(3, n.getSoDienThoai());
-            ps.setDate(4, toSqlDate(n));
-            ps.setDouble(5, n.getHeSoLuong());
-            ps.setInt(6, n.getLuongCoBan());
-            ps.setBoolean(7, n.isTrangThai());
-            ps.setString(8, n.getMaNhanVien());
+        	ps.setString(1, n.getHoTenNhanVien());
+            ps.setBoolean(2, n.isGioiTinh());
+            ps.setString(3, n.getChucVu());
+            ps.setString(4, n.getSoDienThoai());
+            ps.setDate(5, toSqlDate(n));
+            ps.setString(6, n.getTrinhDoHocVan());
+            ps.setDouble(7, n.getHeSoLuong());
+            ps.setInt(8, n.getLuongCoBan());
+            ps.setBoolean(9, n.isTrangThai());
+            ps.setString(10, n.getMaNhanVien());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

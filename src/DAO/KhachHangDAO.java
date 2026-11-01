@@ -1,7 +1,7 @@
 package DAO;
 
 import ENTITY.KhachHang;
-import ENUM.TrangThaiKhachHang;
+import ENUM.LoaiKhachHang;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,18 +11,18 @@ import java.util.List;
 /** DAO của KhachHang. Cột trangThai lưu tên hằng enum (KH_MOI, TOT, NOXAU, DANHSACHDEN). */
 public class KhachHangDAO implements IDAO<KhachHang> {
 
-    private static TrangThaiKhachHang docTrangThai(String s) {
+    private static LoaiKhachHang docLoaiKH(String s) {
         String x = s == null ? "" : s.trim();
-        for (TrangThaiKhachHang t : TrangThaiKhachHang.values()) {
+        for (LoaiKhachHang t : LoaiKhachHang.values()) {
             if (t.name().equalsIgnoreCase(x) || t.toString().equalsIgnoreCase(x)) return t;
         }
-        return TrangThaiKhachHang.KH_MOI;
+        return LoaiKhachHang.KH_MOI;
     }
 
     @Override
     public List<KhachHang> getAll() {
         List<KhachHang> ds = new ArrayList<>();
-        String sql = "SELECT maKhachHang, hoTenKhachHang, soDienThoai, diaChi, diemTichLuy, trangThai "
+        String sql = "SELECT maKhachHang, hoTenKhachHang, soDienThoai, diemTichLuy, loaiKH "
                 + "FROM KhachHang ORDER BY maKhachHang";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
@@ -33,9 +33,8 @@ public class KhachHangDAO implements IDAO<KhachHang> {
                         rs.getString("maKhachHang"),
                         rs.getString("hoTenKhachHang"),
                         rs.getString("soDienThoai"),
-                        rs.getString("diaChi"),
                         rs.getInt("diemTichLuy"),
-                        docTrangThai(rs.getString("trangThai"))));
+                        docLoaiKH(rs.getString("LoaiKH"))));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,16 +44,15 @@ public class KhachHangDAO implements IDAO<KhachHang> {
 
     @Override
     public boolean them(KhachHang k) {
-        String sql = "INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, diaChi, diemTichLuy, trangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, diemTichLuy, loaiKH) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, k.getMaKhachHang());
             ps.setString(2, k.getHoTenKhachHang());
             ps.setString(3, k.getSoDienThoai());
-            ps.setString(4, k.getDiaChi());
-            ps.setInt(5, k.getDiemTichLuy());
-            ps.setString(6, k.getTrangThai().name());
+            ps.setInt(4, k.getDiemTichLuy());
+            ps.setString(5, k.getLoaiKH().name());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,16 +62,15 @@ public class KhachHangDAO implements IDAO<KhachHang> {
 
     @Override
     public boolean capNhat(KhachHang k) {
-        String sql = "UPDATE KhachHang SET hoTenKhachHang = ?, soDienThoai = ?, diaChi = ?, diemTichLuy = ?, "
-                + "trangThai = ? WHERE maKhachHang = ?";
+        String sql = "UPDATE KhachHang SET hoTenKhachHang = ?, soDienThoai = ?,diemTichLuy = ?, "
+                + "loaiKH = ? WHERE maKhachHang = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, k.getHoTenKhachHang());
             ps.setString(2, k.getSoDienThoai());
-            ps.setString(3, k.getDiaChi());
-            ps.setInt(4, k.getDiemTichLuy());
-            ps.setString(5, k.getTrangThai().name());
-            ps.setString(6, k.getMaKhachHang());
+            ps.setInt(3, k.getDiemTichLuy());
+            ps.setString(4, k.getLoaiKH().name());
+            ps.setString(5, k.getMaKhachHang());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

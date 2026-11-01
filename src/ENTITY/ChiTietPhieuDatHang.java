@@ -1,26 +1,17 @@
 package ENTITY;
 
 public class ChiTietPhieuDatHang {
-
-	private String maChiTietPDH;
 	private PhieuDatHang maPhieuDatHang;
 	private SanPham maSanPham;
 	private int soLuong;
 	private double donGia;
-	public ChiTietPhieuDatHang(String maChiTietPDH, PhieuDatHang maPhieuDatHang, SanPham maSanPham, int soLuong,
+	public ChiTietPhieuDatHang(PhieuDatHang maPhieuDatHang, SanPham maSanPham, int soLuong,
 			double donGia) {
 		super();
-		this.maChiTietPDH = maChiTietPDH;
 		this.maPhieuDatHang = maPhieuDatHang;
 		this.maSanPham = maSanPham;
 		this.soLuong = soLuong;
 		this.donGia = donGia;
-	}
-	public String getMaChiTietPDH() {
-		return maChiTietPDH;
-	}
-	public void setMaChiTietPDH(String maChiTietPDH) {
-		this.maChiTietPDH = maChiTietPDH;
 	}
 	public PhieuDatHang getMaPhieuDatHang() {
 		return maPhieuDatHang;
@@ -63,7 +54,7 @@ public class ChiTietPhieuDatHang {
 	
 	@Override
 	public String toString() {
-		return "ChiTieuPhieuDatHang [maChiTietPDH=" + maChiTietPDH + ", maPhieuDatHang=" + maPhieuDatHang
+		return "ChiTieuPhieuDatHang [maPhieuDatHang=" + maPhieuDatHang
 				+ ", maSanPham=" + maSanPham + ", soLuong=" + soLuong + ", donGia=" + donGia + "]";
 	}
 	

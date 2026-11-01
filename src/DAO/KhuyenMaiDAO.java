@@ -23,7 +23,7 @@ public class KhuyenMaiDAO implements IDAO<KhuyenMai> {
     @Override
     public List<KhuyenMai> getAll() {
         List<KhuyenMai> ds = new ArrayList<>();
-        String sql = "SELECT maKhuyenMai, tenKhuyenMai, ghiChu, ngayBatDau, ngayKetThuc, giaTriGiam, trangThai "
+        String sql = "SELECT maKhuyenMai, tenKhuyenMai, ngayBatDau, ngayKetThuc, giaTriGiam, trangThai "
                 + "FROM KhuyenMai ORDER BY maKhuyenMai";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
@@ -41,8 +41,7 @@ public class KhuyenMaiDAO implements IDAO<KhuyenMai> {
                         ngayBd == null ? null : ngayBd.atStartOfDay(),
                         ngayKt == null ? null : ngayKt.atTime(23, 59, 59),
                         rs.getDouble("giaTriGiam"),
-                        rs.getBoolean("trangThai"),
-                        rs.getString("ghiChu")));
+                        rs.getBoolean("trangThai")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,12 +52,11 @@ public class KhuyenMaiDAO implements IDAO<KhuyenMai> {
     @Override
     public boolean them(KhuyenMai k) {
         String sql = "INSERT INTO KhuyenMai(maKhuyenMai, tenKhuyenMai, ghiChu, ngayBatDau, ngayKetThuc, giaTriGiam, "
-                + "trangThai, maLoai) VALUES (?, ?, ?, ?, ?, ?, ?, 'GIAM_GIA')";
+                + "trangThai) VALUES (?, ?, null, ?, ?, ?, ?, 'GIAM_GIA')";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, k.getMaKhuyenMai());
             ps.setString(2, k.getTenKhuyenMai());
-            ps.setString(3, k.getGhiChu());
             ps.setDate(4, toSqlDate(k.getThoiGianBatDau()));
             ps.setDate(5, toSqlDate(k.getThoiGianKetThuc()));
             ps.setDouble(6, k.getGiaTriGiam());
@@ -72,17 +70,16 @@ public class KhuyenMaiDAO implements IDAO<KhuyenMai> {
 
     @Override
     public boolean capNhat(KhuyenMai k) {
-        String sql = "UPDATE KhuyenMai SET tenKhuyenMai = ?, ghiChu = ?, ngayBatDau = ?, ngayKetThuc = ?, "
+        String sql = "UPDATE KhuyenMai SET tenKhuyenMai = ?, ngayBatDau = ?, ngayKetThuc = ?, "
                 + "giaTriGiam = ?, trangThai = ? WHERE maKhuyenMai = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, k.getTenKhuyenMai());
-            ps.setString(2, k.getGhiChu());
-            ps.setDate(3, toSqlDate(k.getThoiGianBatDau()));
-            ps.setDate(4, toSqlDate(k.getThoiGianKetThuc()));
-            ps.setDouble(5, k.getGiaTriGiam());
-            ps.setBoolean(6, k.isTrangThai());
-            ps.setString(7, k.getMaKhuyenMai());
+            ps.setDate(2, toSqlDate(k.getThoiGianBatDau()));
+            ps.setDate(3, toSqlDate(k.getThoiGianKetThuc()));
+            ps.setDouble(4, k.getGiaTriGiam());
+            ps.setBoolean(5, k.isTrangThai());
+            ps.setString(6, k.getMaKhuyenMai());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

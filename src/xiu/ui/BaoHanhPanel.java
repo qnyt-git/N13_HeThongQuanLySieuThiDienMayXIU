@@ -86,12 +86,12 @@ public class BaoHanhPanel extends JPanel implements Refreshable {
         JButton done = Theme.success("Đã trả máy cho khách"), cancel = Theme.danger("Hủy phiếu");
         done.addActionListener(e -> {
             PhieuBaoHanh b = pick(); if (b == null) return;
-            if (!b.dangXuLy()) { JOptionPane.showMessageDialog(this, "Chỉ trả được phiếu đang xử lý", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
+            if (!b.daXacNhan()) { JOptionPane.showMessageDialog(this, "Chỉ trả được phiếu đã xác nhận", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
             b.traSanPham(); pbhDao.capNhat(b); reloadList();
         });
         cancel.addActionListener(e -> {
             PhieuBaoHanh b = pick(); if (b == null) return;
-            if (!b.dangXuLy()) { JOptionPane.showMessageDialog(this, "Chỉ hủy được phiếu đang xử lý", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
+            if (!b.daXacNhan()) { JOptionPane.showMessageDialog(this, "Chỉ hủy được phiếu đã xác nhận", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
             b.huyPhieu(); pbhDao.capNhat(b); reloadList();
         });
         JPanel bt = Theme.transparent(new FlowLayout(FlowLayout.RIGHT, 8, 0)); bt.add(cancel); bt.add(done);
@@ -152,8 +152,7 @@ public class BaoHanhPanel extends JPanel implements Refreshable {
         try { hen = Fmt.parseDate(tfHen.getText()); }
         catch (DateTimeParseException ex) { JOptionPane.showMessageDialog(this, "Ngày hẹn trả không hợp lệ (dd/MM/yyyy)", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
         if (hen.isBefore(LocalDate.now())) { JOptionPane.showMessageDialog(this, "Ngày hẹn trả không được trước ngày tiếp nhận", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
-        PhieuBaoHanh b = new PhieuBaoHanh(pbhDao.taoMaMoi(), (KhachHang) cbKh.getSelectedItem(),
-                PhienLamViec.nhanVien(), LocalDateTime.now(), hen.atTime(17, 0), TrangThaiPhieuBaoHanh.DANG_XU_LY, "");
+        PhieuBaoHanh b = new PhieuBaoHanh(pbhDao.taoMaMoi(), (KhachHang) cbKh.getSelectedItem(), LocalDateTime.now(), hen.atTime(17, 0), TrangThaiPhieuBaoHanh.DA_XAC_NHAN);
         for (Dong d : dong) b.taoChiTiet(d.sp, d.tinhTrang, d.noiDung);
         if (!pbhDao.them(b)) { JOptionPane.showMessageDialog(this, "Không lưu được phiếu bảo hành", "Lỗi", JOptionPane.ERROR_MESSAGE); return; }
         JOptionPane.showMessageDialog(this, "Đã tiếp nhận phiếu bảo hành " + b.getMaPhieubaoHanh(), "Thành công", JOptionPane.INFORMATION_MESSAGE);

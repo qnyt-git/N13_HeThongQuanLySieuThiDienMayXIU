@@ -53,24 +53,37 @@ public class PhieuDatHang {
         return tong;
     }
 
-    public void xacNhan() { this.trangThai = true; }
-    public void huyDat() { this.trangThai = false; }
-    public boolean daXacNhan() { return trangThai; }
+    public void xacNhan() {
+        if (this.trangThai == TrangThaiPhieuDatHang.CHO_XU_LY) {
+            this.trangThai = TrangThaiPhieuDatHang.DA_XAC_NHAN;
+        }
+    }
+
+    public void huyDat() {
+        this.trangThai = TrangThaiPhieuDatHang.DA_HUY;
+    }
+
+    public boolean daXacNhan() {
+        return this.trangThai == TrangThaiPhieuDatHang.DA_XAC_NHAN || this.trangThai == TrangThaiPhieuDatHang.DA_HOAN_THANH;
+    }
 
     @Override
     public String toString() { return maPhieuDatHang; }
 
     // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
 
-    public ChiTietPhieuDatHang taoChiTiet(SanPham sp, int soLuong, double donGia) {
-        ChiTietPhieuDatHang ct = new ChiTietPhieuDatHang(maPhieuDatHang + "-" + sp.getMaSanPham(), this, sp, soLuong, donGia);
+    public ChiTietPhieuDatHang taoChiTiet(
+            SanPham sp, int soLuong, double donGia) {
+
+        ChiTietPhieuDatHang ct = new ChiTietPhieuDatHang(
+                this, sp, soLuong, donGia);
+
         themChiTiet(ct);
         return ct;
     }
 
     /** Nhãn trạng thái; entity chỉ có boolean nên "Đã giao" được suy ra từ việc đã lập hóa đơn. */
-    public String trangThaiText(boolean daLapHoaDon) {
-        if (daLapHoaDon) return "Đã giao";
-        return trangThai ? "Đã xác nhận" : "Chờ xử lý";
+    public String trangThaiText() {
+        return trangThai == null ? "" : trangThai.toString();
     }
 }

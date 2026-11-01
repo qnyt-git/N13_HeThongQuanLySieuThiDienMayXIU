@@ -28,7 +28,7 @@ public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
         for (TrangThaiPhieuBaoHanh t : TrangThaiPhieuBaoHanh.values()) {
             if (t.name().equalsIgnoreCase(x) || t.toString().equalsIgnoreCase(x)) return t;
         }
-        return TrangThaiPhieuBaoHanh.DANG_XU_LY;
+        return TrangThaiPhieuBaoHanh.DA_XAC_NHAN;
     }
 
     private static LocalDateTime toLdt(Timestamp t) {
@@ -48,37 +48,41 @@ public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
         List<PhieuBaoHanh> ds = new ArrayList<>();
 
         Map<String, KhachHang> kh = new HashMap<>();
-        for (KhachHang k : new KhachHangDAO().getAll()) kh.put(k.getMaKhachHang(), k);
-        Map<String, NhanVien> nv = new HashMap<>();
-        for (NhanVien n : new NhanVienDAO().getAll()) nv.put(n.getMaNhanVien(), n);
-        Map<String, SanPham> sp = new HashMap<>();
-        for (SanPham s : new SanPhamDAO().getAll()) sp.put(s.getMaSanPham(), s);
+        for (KhachHang k : new KhachHangDAO().getAll()) {
+            kh.put(k.getMaKhachHang(), k);
+        }
 
-        String sql = "SELECT maPhieubaoHanh, maKhachHang, maNhanVien, ngayTiepNhan, ngayHenTra, trangThai, ghiChu "
-                + "FROM PhieuBaoHanh ORDER BY ngayTiepNhan, maPhieubaoHanh";
+        Map<String, SanPham> sp = new HashMap<>();
+        for (SanPham s : new SanPhamDAO().getAll()) {
+            sp.put(s.getMaSanPham(), s);
+        }
+
+        String sql = "SELECT maPhieuBaoHanh, maKhachHang, ngayTiepNhan, ngayHenTra, trangThai "
+                + "FROM PhieuBaoHanh ORDER BY ngayTiepNhan, maPhieuBaoHanh";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 ds.add(new PhieuBaoHanh(
-                        rs.getString("maPhieubaoHanh"),
+                        rs.getString("maPhieuBaoHanh"),
                         kh.get(rs.getString("maKhachHang")),
-                        nv.get(rs.getString("maNhanVien")),
                         toLdt(rs.getTimestamp("ngayTiepNhan")),
                         toLdt(rs.getTimestamp("ngayHenTra")),
-                        docTrangThai(rs.getString("trangThai")),
-                        rs.getString("ghiChu")));
+                        docTrangThai(rs.getString("trangThai"))
+                ));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         Map<String, PhieuBaoHanh> idx = new HashMap<>();
-        for (PhieuBaoHanh p : ds) idx.put(p.getMaPhieubaoHanh(), p);
+        for (PhieuBaoHanh p : ds) {
+            idx.put(p.getMaPhieubaoHanh(), p);
+        }
 
-        String sqlCt = "SELECT maChiTietPBH, maPhieuBaoHanh, maSanPham, tinhTrangSanPham, noiDungBaoHanh "
-                + "FROM ChiTietPhieuBaoHanh ORDER BY maChiTietPBH";
+        String sqlCt = "SELECT maPhieuBaoHanh, maSanPham, tinhTrangSanPham, noiDungBaoHanh "
+                + "FROM ChiTietPhieuBaoHanh ORDER BY maPhieuBaoHanh, maSanPham";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sqlCt);
              ResultSet rs = ps.executeQuery()) {
@@ -86,30 +90,35 @@ public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
             while (rs.next()) {
                 PhieuBaoHanh p = idx.get(rs.getString("maPhieuBaoHanh"));
                 SanPham s = sp.get(rs.getString("maSanPham"));
+
                 if (p != null && s != null) {
                     p.themChiTiet(new ChiTietPhieuBaoHanh(
-                            rs.getString("maChiTietPBH"), p, s,
-                            rs.getString("tinhTrangSanPham"), rs.getString("noiDungBaoHanh")));
+                            p,
+                            s,
+                            rs.getString("tinhTrangSanPham"),
+                            rs.getString("noiDungBaoHanh")
+                    ));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return ds;
     }
 
     private boolean themPhieu(Connection con, PhieuBaoHanh p) {
-        String sql = "INSERT INTO PhieuBaoHanh(maPhieubaoHanh, maKhachHang, maNhanVien, ngayTiepNhan, ngayHenTra, "
-                + "trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PhieuBaoHanh "
+                + "(maPhieuBaoHanh, maKhachHang, ngayTiepNhan, ngayHenTra, trangThai) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, p.getMaPhieubaoHanh());
             ps.setString(2, p.getMaKhachHang().getMaKhachHang());
-            ps.setString(3, p.getMaNhanVien().getMaNhanVien());
-            ps.setTimestamp(4, toTs(p.getNgayTiepNhan()));
-            ps.setTimestamp(5, toTs(p.getNgayHenTra()));
-            ps.setString(6, p.getTrangThai().toString());
-            ps.setString(7, p.getGhiChu());
+            ps.setTimestamp(3, toTs(p.getNgayTiepNhan()));
+            ps.setTimestamp(4, toTs(p.getNgayHenTra()));
+            ps.setString(5, p.getTrangThai().toString());
+
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,29 +126,21 @@ public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
         }
     }
 
-    /** Mã dòng chi tiết do entity tạo dài hơn VARCHAR(10), nên DAO cấp mã ngắn CTPBH00001... */
-    private int soChiTietLonNhat(Connection con) throws Exception {
-        String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maChiTietPBH, 6, 10) AS INT)) FROM ChiTietPhieuBaoHanh";
-        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            return rs.next() ? rs.getInt(1) : 0;
-        }
-    }
-
     private boolean themChiTiet(Connection con, PhieuBaoHanh p) {
-        String sql = "INSERT INTO ChiTietPhieuBaoHanh(maChiTietPBH, maPhieuBaoHanh, maSanPham, tinhTrangSanPham, "
-                + "noiDungBaoHanh) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ChiTietPhieuBaoHanh "
+                + "(maPhieuBaoHanh, maSanPham, tinhTrangSanPham, noiDungBaoHanh) "
+                + "VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            int so = soChiTietLonNhat(con);
             for (ChiTietPhieuBaoHanh ct : p.getChiTietList()) {
-                ct.setMaChiTietPBH(String.format("CTPBH%05d", ++so));
-                ps.setString(1, ct.getMaChiTietPBH());
-                ps.setString(2, p.getMaPhieubaoHanh());
-                ps.setString(3, ct.getMaSanPham().getMaSanPham());
-                ps.setString(4, nz(ct.getTinhTrangSanPham()));
-                ps.setString(5, nz(ct.getNoiDungBaoHanh()));
+                ps.setString(1, p.getMaPhieubaoHanh());
+                ps.setString(2, ct.getMaSanPham().getMaSanPham());
+                ps.setString(3, nz(ct.getTinhTrangSanPham()));
+                ps.setString(4, nz(ct.getNoiDungBaoHanh()));
+
                 ps.addBatch();
             }
+
             ps.executeBatch();
             return true;
         } catch (Exception e) {
@@ -187,18 +188,16 @@ public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
     /** Chỉ cập nhật phần đầu phiếu (ngày hẹn trả, trạng thái, ghi chú). */
     @Override
     public boolean capNhat(PhieuBaoHanh p) {
-        String sql = "UPDATE PhieuBaoHanh SET ngayHenTra = ?, trangThai = ?, ghiChu = ? WHERE maPhieubaoHanh = ?";
-
+        String sql = "UPDATE PhieuBaoHanh SET ngayHenTra = ?, trangThai = ? WHERE maPhieuBaoHanh = ?";
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setTimestamp(1, toTs(p.getNgayHenTra()));
             ps.setString(2, p.getTrangThai().toString());
-            ps.setString(3, p.getGhiChu());
-            ps.setString(4, p.getMaPhieubaoHanh());
+            ps.setString(3, p.getMaPhieubaoHanh());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @Override

@@ -55,7 +55,7 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
     }
 
     /** Tìm tài khoản theo tên đăng nhập (kèm nhân viên). @return null nếu không có. */
-    public TaiKhoanNhanVien timTheoTenDangNhap(String tenDangNhap) {
+    public TaiKhoanNhanVien timTheoTenDangNhap(String tenDangNhap) throws Exception {
         String sql = "SELECT maTaiKhoan, tenDangNhap, matKhau, loaiQuyen, trangThai, maNhanVien "
                 + "FROM TaiKhoanNhanVien WHERE tenDangNhap = ?";
 
@@ -64,8 +64,10 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, tenDangNhap);
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
+
                 maTK = rs.getString("maTaiKhoan");
                 tenDN = rs.getString("tenDangNhap");
                 matKhau = rs.getString("matKhau");
@@ -73,14 +75,13 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
                 trangThai = rs.getBoolean("trangThai");
                 maNhanVien = rs.getString("maNhanVien");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
 
-        // đọc xong dòng tài khoản rồi mới tra nhân viên (tránh mở 2 truy vấn lồng nhau trên cùng kết nối)
         NhanVien nv = new NhanVienDAO().timTheoMa(maNhanVien);
-        return new TaiKhoanNhanVien(maTK, tenDN, nv, matKhau, docQuyen(quyen), trangThai);
+
+        return new TaiKhoanNhanVien(
+                maTK, tenDN, nv, matKhau, docQuyen(quyen), trangThai
+        );
     }
 
     @Override

@@ -43,7 +43,7 @@ public class PhieuBaoHanh {
     public void capNhatTrangThai(TrangThaiPhieuBaoHanh tt) { this.trangThai = tt; }
 
     public void traSanPham() {
-        this.trangThai = TrangThaiPhieuBaoHanh.DA_TRA;
+        this.trangThai = TrangThaiPhieuBaoHanh.DA_HOAN_THANH;
     }
 
     public void huyPhieu() {
@@ -52,7 +52,7 @@ public class PhieuBaoHanh {
 
     public boolean quaHan() {
         return LocalDateTime.now().isAfter(this.ngayHenTra)
-            && this.trangThai != TrangThaiPhieuBaoHanh.DA_TRA;
+            && this.trangThai != TrangThaiPhieuBaoHanh.DA_HOAN_THANH;
     }
 
     @Override
@@ -61,12 +61,12 @@ public class PhieuBaoHanh {
     // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
 
     public ChiTietPhieuBaoHanh taoChiTiet(SanPham sp, String tinhTrang, String noiDung) {
-        ChiTietPhieuBaoHanh ct = new ChiTietPhieuBaoHanh(maPhieubaoHanh + "-" + sp.getMaSanPham(), this, sp, tinhTrang, noiDung);
+        ChiTietPhieuBaoHanh ct = new ChiTietPhieuBaoHanh(this, sp, tinhTrang, noiDung);
         themChiTiet(ct);
         return ct;
     }
 
-    public boolean dangXuLy() { return trangThai == TrangThaiPhieuBaoHanh.DANG_XU_LY; }
+    public boolean daXacNhan() { return trangThai == TrangThaiPhieuBaoHanh.DA_XAC_NHAN; }
 
     /** Nhãn hiển thị: "Quá hạn" nếu đã quá ngày hẹn trả mà chưa trả. */
     public String trangThaiHienThi() { return quaHan() ? "Quá hạn" : trangThai.toString(); }

@@ -5,6 +5,7 @@ import ENTITY.KhachHang;
 import ENTITY.NhanVien;
 import ENTITY.PhieuDatHang;
 import ENTITY.SanPham;
+import ENUM.TrangThaiPhieuDatHang;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,6 +35,19 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
         return t == null ? null : Timestamp.valueOf(t);
     }
 
+    private static TrangThaiPhieuDatHang docTrangThai(String s) {
+        String x = s == null ? "" : s.trim();
+
+        for (TrangThaiPhieuDatHang t : TrangThaiPhieuDatHang.values()) {
+            if (t.toString().equalsIgnoreCase(x)
+                    || t.name().equalsIgnoreCase(x)) {
+                return t;
+            }
+        }
+
+        return TrangThaiPhieuDatHang.CHO_XU_LY;
+    }
+    
     @Override
     public List<PhieuDatHang> getAll() {
         Map<String, KhachHang> kh = new HashMap<>();
@@ -54,17 +68,16 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                String tt = rs.getString("trangThai");
-                boolean daXacNhan = "Đã xác nhận".equals(tt) || "Đã giao".equals(tt);
-                ds.add(new PhieuDatHang(
-                        rs.getString("maPhieuDatHang"),
-                        kh.get(rs.getString("maKhachHang")),
-                        nv.get(rs.getString("maNhanVien")),
-                        toLdt(rs.getTimestamp("ngayDatHang")),
-                        daXacNhan,
-                        rs.getString("ghiChu")));
-            }
+        	while (rs.next()) {
+        	    ds.add(new PhieuDatHang(
+        	            rs.getString("maPhieuDatHang"),
+        	            kh.get(rs.getString("maKhachHang")),
+        	            nv.get(rs.getString("maNhanVien")),
+        	            toLdt(rs.getTimestamp("ngayDatHang")),
+        	            docTrangThai(rs.getString("trangThai")),
+        	            rs.getString("ghiChu")
+        	    ));
+        	}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,8 +85,8 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
         Map<String, PhieuDatHang> idx = new HashMap<>();
         for (PhieuDatHang p : ds) idx.put(p.getMaPhieuDatHang(), p);
 
-        String sqlCt = "SELECT maChiTietPDH, maPhieuDatHang, maSanPham, soLuong, donGia "
-                + "FROM ChiTietPhieuDatHang ORDER BY maChiTietPDH";
+        String sqlCt = "SELECT maPhieuDatHang, maSanPham, soLuong, donGia "
+                + "FROM ChiTietPhieuDatHang ORDER BY maPhieuDatHang, maSanPham";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sqlCt);
              ResultSet rs = ps.executeQuery()) {
@@ -83,7 +96,7 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
                 SanPham s = sp.get(rs.getString("maSanPham"));
                 if (p != null && s != null) {
                     p.themChiTiet(new ChiTietPhieuDatHang(
-                            rs.getString("maChiTietPDH"), p, s,
+                            p, s,
                             rs.getInt("soLuong"), rs.getDouble("donGia")));
                 }
             }
@@ -111,31 +124,23 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
         }
     }
 
-    /** Mã dòng chi tiết do entity tạo dài hơn VARCHAR(10), nên DAO cấp mã ngắn CTPDH00001... */
-    private int soChiTietLonNhat(Connection con) throws Exception {
-        String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maChiTietPDH, 6, 10) AS INT)) FROM ChiTietPhieuDatHang";
-        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            return rs.next() ? rs.getInt(1) : 0;
-        }
-    }
 
     private boolean themChiTiet(Connection con, PhieuDatHang p) {
-        String sql = "INSERT INTO ChiTietPhieuDatHang(maChiTietPDH, maPhieuDatHang, maSanPham, soLuong, donGia) "
-                + "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ChiTietPhieuDatHang(maPhieuDatHang, maSanPham, soLuong, donGia) "
+                + "VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            int so = soChiTietLonNhat(con);
             for (ChiTietPhieuDatHang ct : p.getChiTietList()) {
-                ct.setMaChiTietPDH(String.format("CTPDH%05d", ++so));
-                ps.setString(1, ct.getMaChiTietPDH());
-                ps.setString(2, p.getMaPhieuDatHang());
-                ps.setString(3, ct.getMaSanPham().getMaSanPham());
-                ps.setInt(4, ct.getSoLuong());
-                ps.setDouble(5, ct.getDonGia());
+                ps.setString(1, p.getMaPhieuDatHang());
+                ps.setString(2, ct.getMaSanPham().getMaSanPham());
+                ps.setInt(3, ct.getSoLuong());
+                ps.setDouble(4, ct.getDonGia());
                 ps.addBatch();
             }
+
             ps.executeBatch();
             return true;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -182,7 +187,7 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
     @Override
     public boolean capNhat(PhieuDatHang p) {
         String sql = "UPDATE PhieuDatHang SET ghiChu = ?, trangThai = CASE WHEN ? = 1 THEN "
-                + "(CASE WHEN trangThai = N'Đã giao' THEN trangThai ELSE N'Đã xác nhận' END) ELSE N'Chờ xử lý' END "
+                + "(CASE WHEN trangThai = N'Đã hoàn thành' THEN trangThai ELSE N'Đã xác nhận' END) ELSE N'Chờ xử lý' END "
                 + "WHERE maPhieuDatHang = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {

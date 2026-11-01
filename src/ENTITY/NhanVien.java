@@ -10,7 +10,7 @@ public class NhanVien {
     private String chucVu;		
     private String soDienThoai;
     private LocalDate ngaySinh;
-    private String TrinhDoHocVan; //điền các thông tin về trình độ học vấn
+    private String trinhDoHocVan; //điền các thông tin về trình độ học vấn
     private float heSoLuong; // hệ số lương được sett theo chức vụ
     						 // vd: quản lý: 3.0;  bán hàng: 2.3
     private int luongCoBan;
@@ -29,7 +29,7 @@ public class NhanVien {
 									this.chucVu = chucVu;
 									this.soDienThoai = soDienThoai;
 									this.ngaySinh = ngaySinh;
-									TrinhDoHocVan = trinhDoHocVan;
+									this.trinhDoHocVan = trinhDoHocVan;
 									this.heSoLuong = heSoLuong;
 									this.luongCoBan = luongCoBan;
 									this.trangThai = trangThai;
@@ -71,10 +71,10 @@ public class NhanVien {
 		this.ngaySinh = ngaySinh;
 	}
 	public String getTrinhDoHocVan() {
-		return TrinhDoHocVan;
+		return trinhDoHocVan;
 	}
 	public void setTrinhDoHocVan(String trinhDoHocVan) {
-		TrinhDoHocVan = trinhDoHocVan;
+		this.trinhDoHocVan = trinhDoHocVan;
 	}
 	public float getHeSoLuong() {
 		return heSoLuong;
