@@ -28,7 +28,7 @@ public class DashboardPanel extends JPanel implements Refreshable {
         cards.add(stat("Tổng khách hàng", lbCustomers)); cards.add(stat("Sản phẩm sắp hết (<10)", lbLow));
         // Việc cần xử lý
         cards.add(stat("Phiếu đặt hàng chờ xác nhận", lbPdh)); cards.add(stat("Phiếu nhập kho chờ duyệt", lbPnk));
-        cards.add(stat("Phiếu bảo hành đang xử lý", lbBh)); cards.add(stat("Khách nợ xấu / danh sách đen", lbBad));
+        cards.add(stat("Phiếu bảo hành đang xử lý", lbBh)); cards.add(stat("Khách hàng VIP", lbBad));
         body.add(cards, BorderLayout.NORTH);
         JPanel charts = Theme.transparent(new GridLayout(1, 2, 14, 0));
         JPanel c1 = Theme.card(); c1.add(Theme.label("Doanh thu theo tháng (triệu đồng)"), BorderLayout.NORTH); c1.add(bar);
@@ -62,11 +62,11 @@ public class DashboardPanel extends JPanel implements Refreshable {
         int low = 0;
         for (SanPham s : new SanPhamDAO().getAll()) if (s.sapHetHang(10)) low++;
         int pdh = 0, pnk = 0, bh = 0, bad = 0;
-        for (PhieuDatHang p : new PhieuDatHangDAO().getAll()) if (!p.isTrangThai()) pdh++;
+        for (PhieuDatHang p : new PhieuDatHangDAO().getAll()) if (!p.daXacNhan()) pdh++;
         for (PhieuNhapKho p : new PhieuNhapKhoDAO().getAll()) if (p.getTrangThai() == TrangThaiPhieuNhapKho.CHO_DUYET) pnk++;
         for (PhieuBaoHanh p : new PhieuBaoHanhDAO().getAll()) if (p.getTrangThai() == TrangThaiPhieuBaoHanh.DANG_XU_LY) bh++;
         for (KhachHang k : new KhachHangDAO().getAll())
-            if (k.getTrangThai() == TrangThaiKhachHang.NOXAU || k.getTrangThai() == TrangThaiKhachHang.DANHSACHDEN) bad++;
+            if (k.getLoaiKH() == LoaiKhachHang.KH_VIP) bad++;
         lbPdh.setText(String.valueOf(pdh)); lbPnk.setText(String.valueOf(pnk)); lbBh.setText(String.valueOf(bh)); lbBad.setText(String.valueOf(bad));
         lbRev.setText(Fmt.money(rev)); lbOrders.setText(String.valueOf(orders));
         lbCustomers.setText(String.valueOf(new KhachHangDAO().getAll().size())); lbLow.setText(String.valueOf(low));
