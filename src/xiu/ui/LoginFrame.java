@@ -73,11 +73,26 @@ public class LoginFrame extends JFrame {
     private void doLogin() {
         String u = tfUser.getText().trim(), p = new String(pfPass.getPassword());
         if (u.isEmpty() || p.isEmpty()) { lbError.setText("Vui lòng nhập tên đăng nhập và mật khẩu"); return; }
-        TaiKhoanNhanVien tk = new TaiKhoanNhanVienDAO().timTheoTenDangNhap(u);
-        String err = tk == null ? "Tên đăng nhập không tồn tại" : tk.kiemTraDangNhap(u, p);
-        if (err != null) { lbError.setText(err); pfPass.setText(""); pfPass.requestFocus(); return; }
-        PhienLamViec.dangNhap(tk);
-        dispose();
-        new MainFrame().setVisible(true);
+        try {
+            TaiKhoanNhanVien tk = new TaiKhoanNhanVienDAO().timTheoTenDangNhap(u);
+            String err = tk == null ? "Tên đăng nhập không tồn tại" : tk.kiemTraDangNhap(u, p);
+            if (err != null) {
+                lbError.setText(err);
+                pfPass.setText("");
+                pfPass.requestFocus();
+                return;
+            }
+            PhienLamViec.dangNhap(tk);
+            dispose();
+            new MainFrame().setVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            String detail = ex.getMessage() == null ? "Không rõ nguyên nhân" : ex.getMessage();
+            lbError.setText("Không truy vấn được tài khoản SQL Server");
+            JOptionPane.showMessageDialog(this,
+                    "Không thể kiểm tra tài khoản đăng nhập.\n"
+                    + detail + "\n\nKiểm tra dịch vụ SQL Server, database XIU_Store và bảng TaiKhoanNhanVien.",
+                    "Lỗi kết nối cơ sở dữ liệu", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
