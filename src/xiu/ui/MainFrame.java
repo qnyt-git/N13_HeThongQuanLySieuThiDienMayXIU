@@ -53,7 +53,7 @@ public class MainFrame extends JFrame {
 
     private void registerScreens() {
         factories.put("home", DashboardPanel::new);
-        factories.put("nhanVien", DanhMuc::nhanVien);
+        factories.put("nhanVien", NhanVienPanel::new);
         factories.put("taiKhoan", DanhMuc::taiKhoan);
         factories.put("caLam", DanhMuc::caLam);
         factories.put("sanPham", DanhMuc::sanPham);
