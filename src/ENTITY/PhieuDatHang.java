@@ -4,19 +4,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import ENUM.TrangThaiPhieuDatHang;
+
 public class PhieuDatHang {
     private String maPhieuDatHang;
     private KhachHang maKhachHang;
     private NhanVien maNhanVien;
     private LocalDateTime ngayDatHang;
-    private boolean trangThai; //đã xác nhận / đã hủy
+    private TrangThaiPhieuDatHang trangThai; // đã xác nhận/đã hoàn thành/đã hủy
     private String ghiChu;
     private List<ChiTietPhieuDatHang> chiTietList = new ArrayList<>();
 
     public PhieuDatHang() {}
 
     public PhieuDatHang(String maPhieuDatHang, KhachHang maKhachHang, NhanVien maNhanVien,
-                        LocalDateTime ngayDatHang, boolean trangThai, String ghiChu) {
+                        LocalDateTime ngayDatHang, TrangThaiPhieuDatHang trangThai, String ghiChu) {
         this.maPhieuDatHang = maPhieuDatHang;
         this.maKhachHang = maKhachHang;
         this.maNhanVien = maNhanVien;
@@ -33,8 +35,8 @@ public class PhieuDatHang {
     public void setMaNhanVien(NhanVien maNhanVien) { this.maNhanVien = maNhanVien; }
     public LocalDateTime getNgayDatHang() { return ngayDatHang; }
     public void setNgayDatHang(LocalDateTime ngayDatHang) { this.ngayDatHang = ngayDatHang; }
-    public boolean isTrangThai() { return trangThai; }
-    public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
+    public TrangThaiPhieuDatHang isTrangThai() { return trangThai; }
+    public void setTrangThai(TrangThaiPhieuDatHang trangThai) { this.trangThai = trangThai; }
     public String getGhiChu() { return ghiChu; }
     public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
     public List<ChiTietPhieuDatHang> getChiTietList() { return chiTietList; }
