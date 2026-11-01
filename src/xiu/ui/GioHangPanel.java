@@ -4,7 +4,6 @@ import DAO.*;
 import ENTITY.*;
 import ENUM.*;
 import xiu.common.*;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -139,7 +138,7 @@ public class GioHangPanel extends JPanel implements Refreshable {
         cbKm.removeAllItems(); cbKm.addItem(KHONG_KM);
         for (KhuyenMai k : kmDao.getAll()) if (k.conHieuLuc()) cbKm.addItem(k);
         cbPdh.removeAllItems(); cbPdh.addItem(BAN_TRUC_TIEP);
-        for (PhieuDatHang p : pdhDao.getAll()) if (p.isTrangThai() && hdDao.timTheoPhieuDat(p) == null) cbPdh.addItem(p);
+        for (PhieuDatHang p : pdhDao.getAll()) if (p.daXacNhan() && hdDao.timTheoPhieuDat(p) == null) cbPdh.addItem(p);
         loading = false;
         loadProducts(); reloadCart();
     }
@@ -221,11 +220,7 @@ public class GioHangPanel extends JPanel implements Refreshable {
     private void submit() {
         if (cartLines.isEmpty()) { warn("Giỏ hàng đang trống"); return; }
         if (!(cbKh.getSelectedItem() instanceof KhachHang kh)) { warn("Vui lòng chọn khách hàng"); return; }
-        // Nghiệp vụ: khách nợ xấu / danh sách đen không được mua hàng hay đặt hàng
-        if (kh.getTrangThai() == TrangThaiKhachHang.NOXAU || kh.getTrangThai() == TrangThaiKhachHang.DANHSACHDEN) {
-            warn("Khách hàng " + kh.getHoTenKhachHang() + " đang ở trạng thái \"" + kh.getTrangThai() + "\", không thể bán hàng / đặt hàng.\nVui lòng liên hệ quản lý.");
-            return;
-        }
+        // LoaiKhachHang chi phan biet KH_MOI va KH_VIP; khong dung trangThai cu nua.
         for (Dong d : cartLines)    // kiểm tra tồn kho lần cuối
             if (d.sl > d.sp.getSoLuongTon()) { warn("Sản phẩm " + d.sp.getTenSanPham() + " không đủ tồn kho"); return; }
         LocalDateTime now = LocalDateTime.now();
