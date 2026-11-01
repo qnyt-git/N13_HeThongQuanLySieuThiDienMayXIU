@@ -65,7 +65,7 @@ public class LichSuMuaHangPanel extends JPanel implements Refreshable {
             history.addRow(new Object[]{h.getMaHoaDon(), Fmt.dateTime(h.getNgayLap()), h.getMaNhanVien(), h.getPhuongThucThanhToan(), h.thanhTienDaLap(), h.getTrangThai()});
             if (h.daThanhToan()) { sum += h.thanhTienDaLap(); n++; }
         }
-        lbSum.setText(n + " hóa đơn đã thanh toán  |  Tổng chi tiêu: " + Fmt.money(sum) + "  |  Điểm tích lũy: " + kh.getDiemTichLuy() + "  |  Hạng: " + kh.getTrangThai());
+        lbSum.setText(n + " hóa đơn đã thanh toán  |  Tổng chi tiêu: " + Fmt.money(sum) + "  |  Điểm tích lũy: " + kh.getDiemTichLuy() + "  |  Hạng: " + kh.getLoaiKH());
     }
 
     @Override public void refresh() { if (!tfKey.getText().trim().isEmpty()) search(); }
