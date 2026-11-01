@@ -3,6 +3,7 @@ package ENUM;
 /** Trạng thái sản phẩm. */
 public enum TrangThaiSanPham {
     CON_BAN("Đang bán"),
+    TAM_NGUNG("Tạm ngưng"),
     HET_HANG("Hết hàng");
 
     private final String nhan;

@@ -7,8 +7,8 @@ public class SanPham {
     private String tenSanPham;
     private double giaBan;
     private int soLuongTon;
-    private String thoiHanBaoHanh; //1 năm/12 tháng; 2 năm......
-    private TrangThaiSanPham trangThai;
+    private String thoiHanBaoHanh; // 1 năm/12 tháng; 2 năm......
+    private TrangThaiSanPham trangThai; // đang bán/tạm ngưng/hết hàng
 
     public SanPham() {}
 

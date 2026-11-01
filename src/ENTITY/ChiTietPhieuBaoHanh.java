@@ -4,8 +4,8 @@ public class ChiTietPhieuBaoHanh {
 	
 	private PhieuBaoHanh maPhieuBaoHanh;
 	private SanPham maSanPham;
-	private String tinhTrangSanPham; //tình trạng hiện tại của sản phẩm
-	private String noiDungBaoHanh; // vd: bảo hành do hư dây diện, bảo hành do mất ốc vít, bảo hành do lỗi.....
+	private String tinhTrangSanPham; // tình trạng hiện tại của sản phẩm
+	private String noiDungBaoHanh; // vd: bảo hành dây điện, bảo hành do không thể khởi động sản phẩm, bảo hành do lỗi.....
 	public ChiTietPhieuBaoHanh(PhieuBaoHanh maPhieuBaoHanh, SanPham maSanPham,
 			String tinhTrangSanPham, String noiDungBaoHanh) {
 		super();
