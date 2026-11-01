@@ -55,7 +55,7 @@ public class DatHangPanel extends JPanel implements Refreshable {
 
     private void confirm() {
         PhieuDatHang p = selected(true); if (p == null) return;
-        if (p.isTrangThai()) { JOptionPane.showMessageDialog(this, "Phiếu này đã được xác nhận", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
+        if (p.daXacNhan()) { JOptionPane.showMessageDialog(this, "Phiếu này đã được xác nhận", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
         p.xacNhan(); reload();
     }
 
