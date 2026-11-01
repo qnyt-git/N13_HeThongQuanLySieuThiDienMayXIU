@@ -23,28 +23,30 @@ public final class DanhMuc {
     // ---------------- Nhân viên ----------------
     public static CrudPanel<NhanVien> nhanVien() {
         return new CrudPanel<>("Quản lý nhân viên", new NhanVienDAO(),
-                new String[]{"Mã NV", "Họ tên", "Chức vụ", "Số điện thoại", "Ngày sinh", "Hệ số lương", "Lương cơ bản", "Trạng thái"},
-                n -> new Object[]{n.getMaNhanVien(), n.getHoTenNhanVien(), n.getChucVu(), n.getSoDienThoai(), Fmt.date(n.getNgaySinh()),
-                        n.heSoLuongDouble(), (double) n.getLuongCoBan(), n.trangThaiText()},
+                new String[]{"Mã NV", "Họ tên", "Giới tính", "Chức vụ", "Số điện thoại", "Ngày sinh", "Trình độ học vấn", "Hệ số lương", "Lương cơ bản", "Trạng thái"},
+                n -> new Object[]{n.getMaNhanVien(), n.getHoTenNhanVien(), n.isGioiTinh() ? "Nam" : "Nữ", n.getChucVu(), n.getSoDienThoai(), Fmt.date(n.getNgaySinh()),
+                        n.getTrinhDoHocVan() == null ? "" : n.getTrinhDoHocVan(), n.heSoLuongDouble(), (double) n.getLuongCoBan(), n.trangThaiText()},
                 List.of(F.of("Họ tên", Kind.NAME),
+                        F.of("Giới tính", Kind.COMBO).opts("Nam", "Nữ"),
                         F.of("Chức vụ", Kind.COMBO).opts("Quản lý", "Bán hàng", "Thu ngân", "Thủ kho", "Chăm sóc khách hàng"),
                         F.of("Số điện thoại", Kind.PHONE),
                         F.of("Ngày sinh", Kind.DATE),
+                        F.of("Trình độ học vấn", Kind.TEXT),
                         F.of("Hệ số lương", Kind.DECIMAL),
                         F.of("Lương cơ bản (đ)", Kind.MONEY),
                         F.of("Trạng thái", Kind.COMBO).opts(LAM, NGHI)),
                 id -> { NhanVien n = new NhanVien(); n.setMaNhanVien(id); return n; },
                 (n, v) -> {
-                    n.setHoTenNhanVien((String) v[1]); n.setChucVu((String) v[2]); n.setSoDienThoai((String) v[3]);
-                    n.setNgaySinh(Fmt.parseDate((String) v[4])); n.setHeSoLuong(((Double) v[5]).floatValue());
-                    n.setLuongCoBan(((Long) v[6]).intValue()); n.setTrangThai(LAM.equals(v[7]));
+                    n.setHoTenNhanVien((String) v[1]); n.setGioiTinh("Nam".equals(v[2])); n.setChucVu((String) v[3]); n.setSoDienThoai((String) v[4]);
+                    n.setNgaySinh(Fmt.parseDate((String) v[5])); n.setTrinhDoHocVan((String) v[6]); n.setHeSoLuong(((Double) v[7]).floatValue());
+                    n.setLuongCoBan(((Long) v[8]).intValue()); n.setTrangThai(LAM.equals(v[9]));
                 }) {
             @Override protected String validateRow(Object[] v, NhanVien e) {
                 NhanVien tmp = new NhanVien();
-                tmp.setNgaySinh(Fmt.parseDate((String) v[4]));
+                tmp.setNgaySinh(Fmt.parseDate((String) v[5]));
                 if (tmp.getNgaySinh().isAfter(LocalDate.now())) return "Ngày sinh không được lớn hơn ngày hiện tại";
                 if (!tmp.hopLeNgaySinh()) return "Nhân viên phải đủ 18 tuổi";
-                if (dup(3, v[3], e)) return "Số điện thoại đã tồn tại";
+                if (dup(4, v[4], e)) return "Số điện thoại đã tồn tại";
                 return null;
             }
             @Override protected String checkDelete(NhanVien n) {
@@ -135,17 +137,17 @@ public final class DanhMuc {
     // ---------------- Khách hàng ----------------
     public static CrudPanel<KhachHang> khachHang() {
         return new CrudPanel<>("Quản lý khách hàng", new KhachHangDAO(),
-                new String[]{"Mã KH", "Họ tên", "Số điện thoại", "Địa chỉ", "Điểm tích lũy", "Trạng thái"},
-                k -> new Object[]{k.getMaKhachHang(), k.getHoTenKhachHang(), k.getSoDienThoai(), k.getDiaChi(), k.getDiemTichLuy(), k.getTrangThai()},
+                new String[]{"Mã KH", "Họ tên", "Số điện thoại", "Địa chỉ", "Điểm tích lũy", "Loại khách hàng"},
+                k -> new Object[]{k.getMaKhachHang(), k.getHoTenKhachHang(), k.getSoDienThoai(), k.getDiaChi(), k.getDiemTichLuy(), k.getLoaiKH()},
                 List.of(F.of("Họ tên", Kind.NAME),
                         F.of("Số điện thoại", Kind.PHONE),
                         F.of("Địa chỉ", Kind.TEXT),
                         F.of("Điểm tích lũy", Kind.INT_NONNEG).def(() -> "0"),
-                        F.of("Trạng thái", Kind.COMBO).opts((Object[]) TrangThaiKhachHang.values())),
+                        F.of("Loại khách hàng", Kind.COMBO).opts((Object[]) LoaiKhachHang.values())),
                 id -> { KhachHang k = new KhachHang(); k.setMaKhachHang(id); return k; },
                 (k, v) -> {
                     k.setHoTenKhachHang((String) v[1]); k.setSoDienThoai((String) v[2]); k.setDiaChi((String) v[3]);
-                    k.setDiemTichLuy((Integer) v[4]); k.setTrangThai((TrangThaiKhachHang) v[5]);
+                    k.setDiemTichLuy((Integer) v[4]); k.setLoaiKH((LoaiKhachHang) v[5]);
                 }) {
             @Override protected String validateRow(Object[] v, KhachHang e) {
                 return dup(2, v[2], e) ? "Số điện thoại đã tồn tại" : null;
