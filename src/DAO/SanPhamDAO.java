@@ -12,30 +12,44 @@ import java.util.List;
 
 public class SanPhamDAO implements IDAO<SanPham> {
 
-	private static SanPham mapSanPham(ResultSet rs) throws SQLException {
-	    String trangThaiSQL = rs.getString("trangThai");
-	    TrangThaiSanPham tt = TrangThaiSanPham.TAM_NGUNG;
+    private static SanPham mapSanPham(ResultSet rs) throws SQLException {
+        int ton = rs.getInt("soLuongTon");
 
-	    for (TrangThaiSanPham t : TrangThaiSanPham.values()) {
-	        if (t.toString().equalsIgnoreCase(trangThaiSQL)
-	                || t.name().equalsIgnoreCase(trangThaiSQL)) {
-	            tt = t;
-	            break;
-	        }
-	    }
+        TrangThaiSanPham tt = null;
+        // Doc BIT an toan: SQL Server tra ve Boolean, mot so driver/nguon du lieu co the tra Number.
+        Object rawTrangThai = rs.getObject("trangThai");
+        boolean dangHoatDong = rawTrangThai != null && (
+                rawTrangThai instanceof Boolean ? (Boolean) rawTrangThai
+                : rawTrangThai instanceof Number ? ((Number) rawTrangThai).intValue() != 0
+                : "1".equals(rawTrangThai.toString())
+                    || "true".equalsIgnoreCase(rawTrangThai.toString())
+                    || "hoạt động".equalsIgnoreCase(rawTrangThai.toString())
+        );
 
-	    SanPham sp = new SanPham(
-	            rs.getString("maSanPham"),
-	            rs.getString("tenSanPham"),
-	            rs.getDouble("giaBan"),
-	            rs.getInt("soLuongTon"),
-	            null,
-	            tt
-	    );
+        String trangThai = rs.getString("trangThai");
 
-	    sp.datBaoHanhThang(rs.getInt("thoiHanBaoHanh"));
-	    return sp;
-	}
+        if ("Đang bán".equals(trangThai)) {
+            tt = TrangThaiSanPham.CON_BAN;
+        } else if ("Tạm ngưng".equals(trangThai)) {
+            tt = TrangThaiSanPham.TAM_NGUNG;
+        }else if ("Hết hàng".equals(trangThai)) {
+            tt = TrangThaiSanPham.HET_HANG;
+        }else if ("Vô hiệu hóa".equals(trangThai)) {
+            tt = TrangThaiSanPham.VO_HIEU_HOA;
+        }
+
+        SanPham sp = new SanPham(
+                rs.getString("maSanPham"),
+                rs.getString("tenSanPham"),
+                rs.getDouble("giaBan"),
+                ton,
+                null,
+                tt
+        );
+
+        sp.datBaoHanhThang(rs.getInt("thoiHanBaoHanh"));
+        return sp;
+    }
 
     private static boolean dangKinhDoanh(SanPham s) {
         return s.getTrangThai() != TrangThaiSanPham.TAM_NGUNG;
@@ -74,7 +88,7 @@ public class SanPhamDAO implements IDAO<SanPham> {
             ps.setDouble(3, s.getGiaBan());
             ps.setInt(4, s.getSoLuongTon());
             ps.setInt(5, s.baoHanhThang());
-            ps.setString(6, s.getTrangThai().toString());
+            ps.setBoolean(6, dangKinhDoanh(s));
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -95,7 +109,7 @@ public class SanPhamDAO implements IDAO<SanPham> {
             ps.setDouble(2, s.getGiaBan());
             ps.setInt(3, s.getSoLuongTon());
             ps.setInt(4, s.baoHanhThang());
-            ps.setString(5, s.getTrangThai().toString());
+            ps.setBoolean(5, dangKinhDoanh(s));
             ps.setString(6, s.getMaSanPham());
 
             return ps.executeUpdate() > 0;
