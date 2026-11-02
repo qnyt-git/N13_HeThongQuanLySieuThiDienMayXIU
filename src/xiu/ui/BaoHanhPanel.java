@@ -11,9 +11,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import com.toedter.calendar.JDateChooser;
+import java.util.Date;
+import java.time.ZoneId;
 
 /** Bảo hành: tiếp nhận phiếu bảo hành (kiểm tra thời hạn theo hóa đơn) và theo dõi trả máy. */
 public class BaoHanhPanel extends JPanel implements Refreshable {
@@ -25,7 +27,8 @@ public class BaoHanhPanel extends JPanel implements Refreshable {
     private final List<Dong> dong = new ArrayList<>();
     private final JComboBox<KhachHang> cbKh = new JComboBox<>();
     private final JComboBox<SanPham> cbSp = new JComboBox<>();
-    private final JTextField tfHen = Theme.field(12), tfTinhTrang = Theme.field(16), tfNoiDung = Theme.field(22);
+    private final JDateChooser dcHen = new JDateChooser();
+    private final JTextField tfTinhTrang = Theme.field(16), tfNoiDung = Theme.field(22);
     private final DefaultTableModel lines = Theme.model("Mã SP", "Tên sản phẩm", "Tình trạng sản phẩm", "Nội dung bảo hành");
     private final DefaultTableModel model = Theme.model("Mã phiếu", "Khách hàng", "Ngày tiếp nhận", "Ngày hẹn trả", "Trạng thái");
     private final DefaultTableModel detail = Theme.model("Mã SP", "Tên sản phẩm", "Tình trạng sản phẩm", "Nội dung bảo hành");
@@ -51,10 +54,13 @@ public class BaoHanhPanel extends JPanel implements Refreshable {
         JPanel head = new JPanel(new GridBagLayout()); head.setOpaque(false);
         GridBagConstraints g = new GridBagConstraints(); g.insets = new Insets(4, 4, 4, 4); g.anchor = GridBagConstraints.WEST; g.fill = GridBagConstraints.HORIZONTAL;
         cbKh.setFont(Theme.BASE); cbSp.setFont(Theme.BASE);
-        tfHen.setText(Fmt.date(LocalDate.now().plusDays(7)));
+        dcHen.setDateFormatString("dd/MM/yyyy");
+        dcHen.setDate(Date.from(LocalDate.now().plusDays(7)
+                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        ((JTextField) dcHen.getDateEditor().getUiComponent()).setEditable(false);
         g.gridy = 0; g.gridx = 0; head.add(Theme.label("Khách hàng *"), g); g.gridx = 1; g.weightx = 1; head.add(cbKh, g);
         g.gridx = 2; g.weightx = 0; head.add(Theme.label("Ngày tiếp nhận"), g); g.gridx = 3; head.add(Theme.muted(Fmt.date(LocalDate.now()) + " (tự động)"), g);
-        g.gridy = 1; g.gridx = 0; head.add(Theme.label("Ngày hẹn trả *"), g); g.gridx = 1; g.weightx = 1; head.add(tfHen, g);
+        g.gridy = 1; g.gridx = 0; head.add(Theme.label("Ngày hẹn trả *"), g); g.gridx = 1; g.weightx = 1; head.add(dcHen, g);
         g.gridx = 2; g.weightx = 0; head.add(Theme.label("Nhân viên"), g); g.gridx = 3; head.add(Theme.muted(PhienLamViec.nhanVien().toString()), g);
 
         JPanel add = new JPanel(new GridBagLayout()); add.setOpaque(false);
@@ -153,6 +159,16 @@ public class BaoHanhPanel extends JPanel implements Refreshable {
                     "Kiểm tra bảo hành", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (o != JOptionPane.YES_OPTION) return;
         }
+     // Kiểm tra ngày hẹn trả >= ngày tiếp nhận
+        if (dcHen.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày hẹn trả!");
+            return;
+        }
+
+        LocalDate ngayTiepNhan = LocalDate.now();
+        LocalDate ngayHen = dcHen.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
         dong.add(new Dong(sp, tfTinhTrang.getText().trim(), tfNoiDung.getText().trim()));
         tfTinhTrang.setText(""); tfNoiDung.setText(""); reloadLines();
     }
@@ -165,9 +181,14 @@ public class BaoHanhPanel extends JPanel implements Refreshable {
     private void save() {
         if (cbKh.getSelectedItem() == null) { JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
         if (dong.isEmpty()) { JOptionPane.showMessageDialog(this, "Chưa có sản phẩm cần bảo hành", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
-        LocalDate hen;
-        try { hen = Fmt.parseDate(tfHen.getText()); }
-        catch (DateTimeParseException ex) { JOptionPane.showMessageDialog(this, "Ngày hẹn trả không hợp lệ (dd/MM/yyyy)", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
+        if (dcHen.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày hẹn trả!");
+            return;
+        }
+
+        LocalDate hen = dcHen.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
         if (hen.isBefore(LocalDate.now())) { JOptionPane.showMessageDialog(this, "Ngày hẹn trả không được trước ngày tiếp nhận", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
         PhieuBaoHanh b = new PhieuBaoHanh(pbhDao.taoMaMoi(), (KhachHang) cbKh.getSelectedItem(), LocalDateTime.now(), hen.atTime(17, 0), TrangThaiPhieuBaoHanh.DA_XAC_NHAN);
         for (Dong d : dong) b.taoChiTiet(d.sp, d.tinhTrang, d.noiDung);
