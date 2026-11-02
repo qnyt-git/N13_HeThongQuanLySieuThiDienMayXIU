@@ -32,7 +32,6 @@ public class ChiTietHoaDon {
         return soLuong * donGia;
     }
 
-    /** Kiểm tra hợp lệ */
     public boolean hopLe() {
         return maSanPham != null && soLuong > 0 && donGia > 0
             && maSanPham.getSoLuongTon() >= soLuong;

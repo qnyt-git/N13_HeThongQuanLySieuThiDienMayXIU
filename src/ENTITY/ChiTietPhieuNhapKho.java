@@ -41,8 +41,7 @@ public class ChiTietPhieuNhapKho {
 	}
 	
 	
-	//thiếu method
-	public void CapNhatSoLuong () {} // thiếu code 
+	public void CapNhatSoLuong () {}
 	
 	public double thanhTien() { 
 		return soLuong * donGia; 

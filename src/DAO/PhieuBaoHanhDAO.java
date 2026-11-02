@@ -17,10 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * DAO của PhieuBaoHanh (+ ChiTietPhieuBaoHanh). Trạng thái "Tiếp nhận" trong SQL được xem như "Đang xử lý".
- * them() lưu phiếu + chi tiết trong một giao dịch; capNhat() chỉ cập nhật phần đầu phiếu.
- */
 public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
 
 	private static TrangThaiPhieuBaoHanh docTrangThai(String s) {
@@ -190,7 +186,6 @@ public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
         }
     }
 
-    /** Chỉ cập nhật phần đầu phiếu (ngày hẹn trả, trạng thái, ghi chú). */
     @Override
     public boolean capNhat(PhieuBaoHanh p) {
         String sql = "UPDATE PhieuBaoHanh SET ngayHenTra = ?, trangThai = ? WHERE maPhieuBaoHanh = ?";

@@ -161,7 +161,6 @@ public class HoaDonDAO implements IDAO<HoaDon> {
         return ds;
     }
 
-    // ===================== THÊM (giao dịch) =====================
 
     private boolean themHoaDon(Connection con, HoaDon h) {
         String sql = "INSERT INTO HoaDon(maHoaDon, maPhieuDatHang, maKhachHang, maNhanVien, maKhuyenMai, "

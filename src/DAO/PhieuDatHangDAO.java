@@ -17,14 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * DAO của PhieuDatHang (+ ChiTietPhieuDatHang). SQL có 4 trạng thái (Chờ xử lý / Đã xác nhận / Đã giao / Đã hủy),
- * entity chỉ có cờ boolean "đã xác nhận":
- *   đọc : "Đã xác nhận" và "Đã giao" -> true; "Chờ xử lý" -> false; phiếu "Đã hủy" không được nạp lên.
- *   ghi : true -> "Đã xác nhận" (nếu phiếu đang "Đã giao" thì giữ nguyên); false -> "Chờ xử lý".
- *   xoa(): không xóa dòng mà đổi sang "Đã hủy" để giữ lịch sử và không vướng khóa ngoại.
- * "Đã giao" do HoaDonDAO đặt khi lập hóa đơn từ phiếu này.
- */
 public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
 
     private static LocalDateTime toLdt(Timestamp t) {
@@ -59,7 +51,6 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
         return getAll(kh, nv, sp);
     }
 
-    /** Nạp phiếu đặt hàng khi đã có sẵn các bảng tra cứu (để HoaDonDAO không phải truy vấn lặp lại). */
     List<PhieuDatHang> getAll(Map<String, KhachHang> kh, Map<String, NhanVien> nv, Map<String, SanPham> sp) {
         List<PhieuDatHang> ds = new ArrayList<>();
         String sql = "SELECT maPhieuDatHang, maKhachHang, maNhanVien, ngayDatHang, trangThai, ghiChu "
@@ -183,7 +174,6 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
         }
     }
 
-    /** Chỉ cập nhật phần đầu phiếu (trạng thái, ghi chú); dòng chi tiết không đổi sau khi lập. */
     @Override
     public boolean capNhat(PhieuDatHang p) {
         String sql = "UPDATE PhieuDatHang SET ghiChu = ?, trangThai = CASE WHEN ? = 1 THEN "

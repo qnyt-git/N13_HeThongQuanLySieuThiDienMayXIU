@@ -39,18 +39,11 @@ public class ChiTietPhieuDatHang {
 	}	
 	
 	
-	//thiếu method
-			//
-			//
-			//
-			//
-			//
-			//
 	public double thanhTien() {
 		return soLuong * donGia; 
 		}
 	
-	public void CapNhatSoLuong() {} //thiểu code
+	public void CapNhatSoLuong() {}
 	
 	@Override
 	public String toString() {

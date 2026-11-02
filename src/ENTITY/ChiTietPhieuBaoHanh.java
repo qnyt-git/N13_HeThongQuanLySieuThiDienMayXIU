@@ -4,8 +4,8 @@ public class ChiTietPhieuBaoHanh {
 	
 	private PhieuBaoHanh maPhieuBaoHanh;
 	private SanPham maSanPham;
-	private String tinhTrangSanPham; // tình trạng hiện tại của sản phẩm
-	private String noiDungBaoHanh; // vd: bảo hành dây điện, bảo hành do không thể khởi động sản phẩm, bảo hành do lỗi.....
+	private String tinhTrangSanPham; 
+	private String noiDungBaoHanh;
 	public ChiTietPhieuBaoHanh(PhieuBaoHanh maPhieuBaoHanh, SanPham maSanPham,
 			String tinhTrangSanPham, String noiDungBaoHanh) {
 		super();
@@ -41,13 +41,6 @@ public class ChiTietPhieuBaoHanh {
 	}
 	
 	
-	//thiếu method
-			//
-			//
-			//
-			//
-			//
-			//
 	public boolean hopLe() {
 	    return maSanPham != null && tinhTrangSanPham != null && !tinhTrangSanPham.isEmpty()
 	        && noiDungBaoHanh != null && !noiDungBaoHanh.isEmpty();
