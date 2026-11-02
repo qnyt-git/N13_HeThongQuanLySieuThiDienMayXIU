@@ -193,11 +193,33 @@ public class GioHangPanel extends JPanel implements Refreshable {
 
     private void loadFromPhieu() {
         if (loading) return;
+
         cartLines.clear();
+
         if (cbPdh.getSelectedItem() instanceof PhieuDatHang p) {
-            for (ChiTietPhieuDatHang c : p.getChiTietList()) cartLines.add(new Dong(c.getMaSanPham(), c.getSoLuong(), c.getDonGia()));
-            cbKh.setSelectedItem(p.getMaKhachHang());
+
+            // Nạp sản phẩm từ phiếu đặt hàng.
+            for (ChiTietPhieuDatHang c : p.getChiTietList()) {
+                cartLines.add(new Dong(
+                        c.getMaSanPham(),
+                        c.getSoLuong(),
+                        c.getDonGia()
+                ));
+            }
+
+            // Chọn khách hàng theo mã, không so sánh đối tượng.
+            String maKH = p.getMaKhachHang().getMaKhachHang();
+
+            for (int i = 0; i < cbKh.getItemCount(); i++) {
+                KhachHang kh = (KhachHang) cbKh.getItemAt(i);
+
+                if (kh.getMaKhachHang().equals(maKH)) {
+                    cbKh.setSelectedIndex(i);
+                    break;
+                }
+            }
         }
+
         reloadCart();
     }
 
