@@ -54,7 +54,7 @@ public class ChiTietPhieuBaoHanh {
 	}
 	public void CapNhatTinhTrang() {}
 	public void CapNhatNoiDungBaoHanh() {}
-	public boolean KiemTraBaoHanh() {}
+//	public boolean KiemTraBaoHanh() {}
 	
 	@Override
 	public String toString() {
