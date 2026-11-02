@@ -6,6 +6,7 @@ public class KhachHang {
     private String maKhachHang;
     private String hoTenKhachHang;
     private String soDienThoai;
+    private String diaChi;
     private int diemTichLuy;
     private LoaiKhachHang LoaiKH; // Khách mới/Khách vip
     
@@ -42,6 +43,14 @@ public class KhachHang {
 
 	public void setSoDienThoai(String soDienThoai) {
 		this.soDienThoai = soDienThoai;
+	}
+
+	public String getDiaChi() {
+		return diaChi;
+	}
+
+	public void setDiaChi(String diaChi) {
+		this.diaChi = diaChi;
 	}
 
 	public int getDiemTichLuy() {
