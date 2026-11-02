@@ -73,9 +73,30 @@ public class LichLamViecPanel extends JPanel implements Refreshable {
                 LocalDate date = monday.plusDays(d);
                 List<String> names = new ArrayList<>();
                 for (PhanCa p : phanCas) {
-                    if (!p.getMaCa().equals(ca) || !p.getNgayLam().equals(date)) continue;
+                    // PhanCaDAO va CaLamViecDAO tao ra cac doi tuong CaLamViec khac nhau.
+                    // Vi vay phai so sanh maCa, khong so sanh object bang equals().
+                    if (p == null || p.getMaCa() == null || p.getNgayLam() == null
+                            || p.getMaNhanVien() == null) {
+                        continue;
+                    }
+
+                    boolean cungCa = ca.getMaCa() != null
+                            && ca.getMaCa().equals(p.getMaCa().getMaCa());
+                    boolean cungNgay = date.equals(p.getNgayLam());
+                    if (!cungCa || !cungNgay) continue;
+
                     String nv = p.getMaNhanVien().getHoTenNhanVien();
-                    names.add(p.daNghi() ? "<s><font color='#B91C1C'>" + nv + "</font></s>" : nv);
+                    if (nv == null || nv.trim().isEmpty()) {
+                        nv = p.getMaNhanVien().getMaNhanVien();
+                    }
+
+                    if (p.daNghi()) {
+                        names.add("<s><font color='#B91C1C'>" + nv + " (Nghỉ)</font></s>");
+                    } else if (p.getTrangThai() == TrangThaiPhanCa.DA_LAM) {
+                        names.add("<font color='#15803D'>" + nv + " (Đã làm)</font>");
+                    } else {
+                        names.add("<font color='#1D4ED8'>" + nv + " (Đã phân)</font>");
+                    }
                 }
                 row[d + 1] = names.isEmpty() ? "" : "<html>" + String.join("<br>", names) + "</html>";
             }
