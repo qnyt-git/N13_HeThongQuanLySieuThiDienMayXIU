@@ -18,6 +18,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import com.toedter.calendar.JDateChooser;
 
 /**
  * Màn hình danh mục dùng chung cho một lớp entity T: bảng + tìm kiếm + Thêm/Sửa/Xóa trong hộp thoại nhập liệu.
@@ -205,36 +206,39 @@ public class CrudPanel<T> extends JPanel implements Refreshable {
         g.gridx = 1; g.weightx = 1; g.fill = GridBagConstraints.HORIZONTAL; p.add(c, g);
     }
 
-    /** Trường ngày có nút lịch, không cần thư viện bên ngoài. */
-    private static class DateInput extends JPanel {
-        private final JTextField text = Theme.field(18);
-        DateInput(String value) {
-            super(new BorderLayout(5, 0));
-            setOpaque(false);
-            text.setText(value == null ? "" : value);
-            JButton calendar = Theme.ghost("Chọn ngày");
-            calendar.addActionListener(e -> {
-                java.util.Date initial = new java.util.Date();
-                try { initial = java.util.Date.from(Fmt.parseDate(text.getText().trim()).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()); }
-                catch (Exception ignored) { }
-                JSpinner picker = new JSpinner(new SpinnerDateModel(initial, null, null, java.util.Calendar.DAY_OF_MONTH));
-                picker.setEditor(new JSpinner.DateEditor(picker, "dd/MM/yyyy"));
-                int result = JOptionPane.showConfirmDialog(this, picker, "Chọn ngày", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-                if (result == JOptionPane.OK_OPTION) {
-                    java.util.Date d = (java.util.Date) picker.getValue();
-                    text.setText(new java.text.SimpleDateFormat("dd/MM/yyyy").format(d));
-                }
-            });
-            add(text, BorderLayout.CENTER); add(calendar, BorderLayout.EAST);
-        }
-        String getText() { return text.getText().trim(); }
-    }
 
     private JComponent makeComp(F f, Object init) {
         String s = init == null ? "" : init.toString();
         if (init instanceof Number n) s = f.kind == Kind.MONEY ? String.valueOf(n.longValue()) : f.kind.name().startsWith("INT") ? String.valueOf(n.intValue()) : n.toString();
         switch (f.kind) {
-            case DATE: return new DateInput(s);
+        case DATE: {
+            JDateChooser chooser = new JDateChooser();
+
+            chooser.setDateFormatString("dd/MM/yyyy");
+            chooser.setPreferredSize(new Dimension(280, 34));
+
+            JTextField editor = (JTextField)
+                    chooser.getDateEditor().getUiComponent();
+            editor.setEditable(false);
+            
+            if (s != null && !s.trim().isEmpty()) {
+                try {
+                    java.time.LocalDate date = Fmt.parseDate(s.trim());
+
+                    chooser.setDate(
+                        java.util.Date.from(
+                            date.atStartOfDay(
+                                java.time.ZoneId.systemDefault()
+                            ).toInstant()
+                        )
+                    );
+                } catch (Exception ignored) {
+                    chooser.setDate(null);
+                }
+            }
+
+            return chooser;
+        }
             case COMBO: {
                 JComboBox<Object> cb = new JComboBox<>(f.opts.get());
                 cb.setFont(Theme.BASE); cb.setPreferredSize(new Dimension(280, 34));
@@ -259,7 +263,13 @@ public class CrudPanel<T> extends JPanel implements Refreshable {
     }
 
     private Object read(JComponent c) {
-        if (c instanceof DateInput d) return d.getText();
+    	if (c instanceof JDateChooser chooser) {
+    	    java.util.Date date = chooser.getDate();
+
+    	    return date == null
+    	        ? ""
+    	        : new java.text.SimpleDateFormat("dd/MM/yyyy").format(date);
+    	}
         if (c instanceof JComboBox<?> cb) return cb.getSelectedItem();
         if (c instanceof JPasswordField pf) return new String(pf.getPassword());
         if (c instanceof javax.swing.text.JTextComponent t) return t.getText().trim();

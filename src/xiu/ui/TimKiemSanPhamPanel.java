@@ -50,11 +50,11 @@ public class TimKiemSanPhamPanel extends JPanel implements Refreshable {
         String k = tfKey.getText().trim().toLowerCase();
         result.setRowCount(0);
         for (SanPham s : new SanPhamDAO().getAll()) {
-            String hay = (s.getMaSanPham() + " " + s.getTenSanPham() + " " + s.getMaVach()).toLowerCase();
+            String hay = (s.getMaSanPham() + " " + s.getTenSanPham()).toLowerCase();
             if (!k.isEmpty() && !hay.contains(k)) continue;
             if (s.getGiaBan() < from || s.getGiaBan() > to) continue;
             if (ckStock.isSelected() && !s.coTheBanSoLuong(1)) continue;
-            result.addRow(new Object[]{s.getMaSanPham(), s.getTenSanPham(), s.getMaVach(), s.getGiaBan(), s.getSoLuongTon(), s.baoHanhThang(), s.getTrangThai()});
+            result.addRow(new Object[]{s.getMaSanPham(), s.getTenSanPham(), s.getGiaBan(), s.getSoLuongTon(), s.baoHanhThang(), s.getTrangThai()});
         }
         lbCount.setText("Tìm thấy " + result.getRowCount() + " sản phẩm");
     }

@@ -62,19 +62,25 @@ public class KhachHang {
 
 	// thêm method
 	public void CapNhatThongTin() {}
-	public void CapNhatDiemTichLuy() {}
+	public void capNhatDiemTichLuy(int diem) {}
 	public void XemLichSuMuaHang() {}
 	
 	
+	public void congDiemTuHoaDon(double thanhTien) {
+        capNhatDiemTichLuy((int) (thanhTien / 100_000));
+        
+    }
+
+    /** Thu hồi điểm đã cộng khi hủy hóa đơn. */
+    public void thuHoiDiemTuHoaDon(double thanhTien) {
+        capNhatDiemTichLuy(-(int) (thanhTien / 100_000));
+    }
 	
+    @Override
+    public String toString() {
+        return hoTenKhachHang + " - " + soDienThoai;
+    }
 	
-	
-	
-	@Override
-	public String toString() {
-		return "KhachHang [maKhachHang=" + maKhachHang + ", hoTenKhachHang=" + hoTenKhachHang + ", soDienThoai="
-				+ soDienThoai + ", diemTichLuy=" + diemTichLuy + ", LoaiKH=" + LoaiKH + "]";
-	}
     
 	
     

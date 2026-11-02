@@ -185,19 +185,10 @@ public class HoaDonDAO implements IDAO<HoaDon> {
         }
     }
 
-    /** Mã dòng chi tiết do entity tạo ("HD001-SP001") dài hơn VARCHAR(10), nên DAO cấp mã ngắn CTHD00001... */
-    private int soChiTietLonNhat(Connection con) throws Exception {
-        String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maChiTietHD, 5, 10) AS INT)) FROM ChiTietHoaDon";
-        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            return rs.next() ? rs.getInt(1) : 0;
-        }
-    }
-
     private boolean themChiTiet(Connection con, HoaDon h) {
         String sql = "INSERT INTO ChiTietHoaDon(maHoaDon, maSanPham, soLuong, donGia) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            int so = soChiTietLonNhat(con);
             for (ChiTietHoaDon ct : h.getChiTietList()) {
                 ps.setString(1, h.getMaHoaDon());
                 ps.setString(2, ct.getMaSanPham().getMaSanPham());

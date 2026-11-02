@@ -134,7 +134,7 @@ public class HoaDon {
 
     /** Tạo và thêm dòng chi tiết (mã dòng = mã hóa đơn + mã sản phẩm). */
     public ChiTietHoaDon taoChiTiet(SanPham sp, int soLuong, double donGia) {
-        ChiTietHoaDon ct = new ChiTietHoaDon(maHoaDon + "-" + sp.getMaSanPham(), this, sp, soLuong, donGia);
+        ChiTietHoaDon ct = new ChiTietHoaDon(this, sp, soLuong, donGia);
         themChiTiet(ct);
         return ct;
     }

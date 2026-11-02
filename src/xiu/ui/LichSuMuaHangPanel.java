@@ -60,10 +60,27 @@ public class LichSuMuaHangPanel extends JPanel implements Refreshable {
         lbInfo.setText(kh.getMaKhachHang() + " - " + kh.getHoTenKhachHang() + "   |   " + kh.getSoDienThoai());
         double sum = 0; int n = 0;
         for (HoaDon h : new HoaDonDAO().getAll()) {
-            if (!h.getMaKhachHang().equals(kh)) continue;
+            if (h.getMaKhachHang() == null
+                    || !h.getMaKhachHang().getMaKhachHang()
+                            .equalsIgnoreCase(kh.getMaKhachHang())) {
+                continue;
+            }
+
             shown.add(h);
-            history.addRow(new Object[]{h.getMaHoaDon(), Fmt.dateTime(h.getNgayLap()), h.getMaNhanVien(), h.getPhuongThucThanhToan(), h.thanhTienDaLap(), h.getTrangThai()});
-            if (h.daThanhToan()) { sum += h.thanhTienDaLap(); n++; }
+
+            history.addRow(new Object[]{
+                h.getMaHoaDon(),
+                Fmt.dateTime(h.getNgayLap()),
+                h.getMaNhanVien(),
+                h.getPhuongThucThanhToan(),
+                h.thanhTienDaLap(),
+                h.getTrangThai()
+            });
+
+            if (h.daThanhToan()) {
+                sum += h.thanhTienDaLap();
+                n++;
+            }
         }
         lbSum.setText(n + " hóa đơn đã thanh toán  |  Tổng chi tiêu: " + Fmt.money(sum) + "  |  Điểm tích lũy: " + kh.getDiemTichLuy() + "  |  Hạng: " + kh.getLoaiKH());
     }

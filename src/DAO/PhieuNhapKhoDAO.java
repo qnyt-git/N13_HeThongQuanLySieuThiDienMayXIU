@@ -50,7 +50,7 @@ public class PhieuNhapKhoDAO implements IDAO<PhieuNhapKho> {
         Map<String, SanPham> sp = new HashMap<>();
         for (SanPham s : new SanPhamDAO().getAll()) sp.put(s.getMaSanPham(), s);
 
-        String sql = "SELECT maPhieuNhapKho, ngayNhap, maNhanVien, maNCC, lyDoNhap, trangThai, ghiChu "
+        String sql = "SELECT maPhieuNhapKho, ngayNhap, maNhanVien, maNCC, lyDoNhap, trangThai "
                 + "FROM PhieuNhapKho ORDER BY ngayNhap, maPhieuNhapKho";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
@@ -96,7 +96,7 @@ public class PhieuNhapKhoDAO implements IDAO<PhieuNhapKho> {
     }
 
     private boolean themPhieu(Connection con, PhieuNhapKho p) {
-        String sql = "INSERT INTO PhieuNhapKho(maPhieuNhapKho, ngayNhap, maNhanVien, maNCC, lyDoNhap, trangThai, ghiChu) "
+        String sql = "INSERT INTO PhieuNhapKho(maPhieuNhapKho, ngayNhap, maNhanVien, maNCC, lyDoNhap, trangThai) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -106,7 +106,6 @@ public class PhieuNhapKhoDAO implements IDAO<PhieuNhapKho> {
             ps.setString(4, p.getMaNCC().getMaNCC());
             ps.setString(5, p.getLyDoNhap());
             ps.setString(6, p.getTrangThai().toString());
-            ps.setString(7, p.getGhiChu());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,13 +177,12 @@ public class PhieuNhapKhoDAO implements IDAO<PhieuNhapKho> {
     /** Chỉ cập nhật phần đầu phiếu (trạng thái, lý do, ghi chú). */
     @Override
     public boolean capNhat(PhieuNhapKho p) {
-        String sql = "UPDATE PhieuNhapKho SET lyDoNhap = ?, trangThai = ?, ghiChu = ? WHERE maPhieuNhapKho = ?";
+        String sql = "UPDATE PhieuNhapKho SET lyDoNhap = ?, trangThai = ?WHERE maPhieuNhapKho = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, p.getLyDoNhap());
             ps.setString(2, p.getTrangThai().toString());
-            ps.setString(3, p.getGhiChu());
-            ps.setString(4, p.getMaPhieuNhapKho());
+            ps.setString(3, p.getMaPhieuNhapKho());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

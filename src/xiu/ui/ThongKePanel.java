@@ -283,7 +283,7 @@ public class ThongKePanel extends JPanel implements Refreshable {
         }
         List<Object[]> rows = new ArrayList<>();
         for (SanPham s : new SanPhamDAO().getAll()) {
-            if (s.getTrangThai() == TrangThaiSanPham.VO_HIEU_HOA) continue;
+            if (s.getTrangThai() == TrangThaiSanPham.HET_HANG) continue;
             int b = ban30.getOrDefault(s.getMaSanPham(), 0);
             String canhBao = s.getSoLuongTon() == 0 ? "Hết hàng" : s.sapHetHang(10) ? "Sắp hết hàng (nên nhập thêm)" : b == 0 ? "Bán chậm (30 ngày chưa bán)" : null;
             if (canhBao != null) rows.add(new Object[]{s.getMaSanPham(), s.getTenSanPham(), s.getSoLuongTon(), b, canhBao});

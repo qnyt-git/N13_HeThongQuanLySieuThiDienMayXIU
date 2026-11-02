@@ -2,6 +2,7 @@ package ENUM;
 
 /** Trạng thái phiếu nhập kho. */
 public enum TrangThaiPhieuNhapKho {
+	CHO_DUYET("Chờ duyệt"),
     DA_XAC_NHAN("Đã xác nhận"),
     DA_HOAN_THANH("Đã Hoàn Thành"),
     DA_HUY("Đã hủy");

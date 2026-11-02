@@ -148,7 +148,7 @@ public class GioHangPanel extends JPanel implements Refreshable {
         String q = tfSearch.getText().trim().toLowerCase();
         for (SanPham s : spDao.getAll()) {
             if (!s.coTheBanSoLuong(1)) continue;
-            String hay = (s.getMaSanPham() + " " + s.getTenSanPham() + " " + s.getMaVach()).toLowerCase();
+            String hay = (s.getMaSanPham() + " " + s.getTenSanPham()).toLowerCase();
             if (!q.isEmpty() && !hay.contains(q)) continue;
             spRows.add(s);
             spView.addRow(new Object[]{s.getMaSanPham(), s.getTenSanPham(), s.getGiaBan(), s.getSoLuongTon()});
@@ -226,7 +226,7 @@ public class GioHangPanel extends JPanel implements Refreshable {
         LocalDateTime now = LocalDateTime.now();
 
         if (mode == Mode.DAT_HANG) {
-            PhieuDatHang p = new PhieuDatHang(pdhDao.taoMaMoi(), kh, PhienLamViec.nhanVien(), now, false, tfNote.getText().trim());
+            PhieuDatHang p = new PhieuDatHang(pdhDao.taoMaMoi(), kh, PhienLamViec.nhanVien(), now, TrangThaiPhieuDatHang.CHO_XU_LY, tfNote.getText().trim());
             for (Dong d : cartLines) p.taoChiTiet(d.sp, d.sl, d.gia);
             if (!pdhDao.them(p)) { warn("Không lưu được phiếu đặt hàng"); return; }
             JOptionPane.showMessageDialog(this, "Đã lập phiếu đặt hàng " + p.getMaPhieuDatHang() + " (chờ xác nhận)", "Thành công", JOptionPane.INFORMATION_MESSAGE);
