@@ -44,7 +44,7 @@ CREATE TABLE TaiKhoanNhanVien (
     maTaiKhoan      VARCHAR(10)     PRIMARY KEY,
     tenDangNhap     VARCHAR(50)     UNIQUE NOT NULL,
     matKhau         VARCHAR(100)    NOT NULL,
-    loaiQuyen       VARCHAR(20)     CHECK (loaiQuyen IN ('QUAN_LY','BAN_HANG','CSKH','KHO')),
+    loaiQuyen       VARCHAR(20)     CHECK (loaiQuyen IN ('QUAN_LY','BAN_HANG','THU_NGAN','CSKH','KHO')),
     trangThai       BIT             DEFAULT 1,
     maNhanVien      VARCHAR(10)     UNIQUE REFERENCES NhanVien(maNhanVien)
 );
@@ -57,7 +57,7 @@ CREATE TABLE SanPham (
     giaBan          FLOAT           CHECK (giaBan > 0),
     soLuongTon      INT             CHECK (soLuongTon >= 0),
     thoiHanBaoHanh  INT             CHECK (thoiHanBaoHanh >= 0),
-    trangThai       BIT             DEFAULT 1
+    trangThai NVARCHAR(20) NOT NULL CHECK (trangThai IN (N'Đang bán',N'Tạm ngưng',N'Hết hàng',N'Vô hiệu hóa'))
 );
 GO
 
@@ -67,7 +67,7 @@ CREATE TABLE KhachHang (
     hoTenKhachHang  NVARCHAR(100)   NOT NULL,
     soDienThoai     VARCHAR(15)     UNIQUE,
     diemTichLuy     INT             CHECK (diemTichLuy >= 0) DEFAULT 0,
-    loaiKH          VARCHAR(20)     CHECK (loaiKH IN ('KH_MOI','TOT','NOXAU','DANHSACHDEN'))
+    loaiKH          VARCHAR(20)     CHECK (loaiKH IN ('KH_MOI','KH_VIP'))
 );
 GO
 
@@ -117,7 +117,7 @@ GO
 CREATE TABLE PhieuDatHang (
     maPhieuDatHang  VARCHAR(10)     PRIMARY KEY,
     ngayDatHang     DATETIME        DEFAULT GETDATE(),
-    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Chờ xử lý', N'Đã xác nhận', N'Đã giao', N'Đã hủy')),
+    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Chờ xử lý', N'Đã xác nhận', N'Đã hoàn thành', N'Đã hủy')),
     maKhachHang     VARCHAR(10)     REFERENCES KhachHang(maKhachHang),
     maNhanVien      VARCHAR(10)     REFERENCES NhanVien(maNhanVien),
     ghiChu          NVARCHAR(500)
@@ -165,7 +165,7 @@ CREATE TABLE PhieuNhapKho (
     ngayNhap        DATETIME        DEFAULT GETDATE(),
     lyDoNhap        NVARCHAR(500),
     maNhanVien      VARCHAR(10)     REFERENCES NhanVien(maNhanVien),
-    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Chờ duyệt', N'Đã xác nhận', N'Đã hủy')),
+    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Chờ duyệt', N'Đã xác nhận',N'Đã hoàn thành', N'Đã hủy')),
     maNCC           VARCHAR(10)     REFERENCES NhaCungCap(maNCC)
 );
 GO
@@ -186,7 +186,7 @@ CREATE TABLE PhieuBaoHanh (
     maKhachHang     VARCHAR(10)     REFERENCES KhachHang(maKhachHang),
     ngayTiepNhan    DATETIME        DEFAULT GETDATE(),
     ngayHenTra      DATETIME,
-    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Tiếp nhận', N'Đang xử lý', N'Đã trả', N'Đã hủy')),
+    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Đã xác nhận', N'Đã trả', N'Đã hủy')),
     CONSTRAINT CK_NgayHenTra CHECK (ngayHenTra >= ngayTiepNhan)
 );
 GO
@@ -256,26 +256,26 @@ GO
 -- 4.5. Sản phẩm
 INSERT INTO SanPham(maSanPham, tenSanPham, giaBan, soLuongTon, 
                     thoiHanBaoHanh, trangThai) VALUES
-('SP001', N'Tủ lạnh LG Inverter 240L',   12000000, 15, 24, 1),
-('SP002', N'TV Samsung 4K 55 inch',      18000000,  8, 12, 1),
-('SP003', N'Máy giặt Toshiba 10kg',       9000000, 20, 24, 1),
-('SP004', N'Điều hòa Daikin 1.5HP',      11500000, 12, 24, 1),
-('SP005', N'Tủ lạnh Samsung 488L',       25000000,  5, 24, 1),
-('SP006', N'Máy giặt LG TurboWash 10kg', 10250000,  0, 24, 0),
-('SP007', N'Smart TV Sony 4K 65 inch',   32000000,  3, 24, 1),
-('SP008', N'Quạt điều hòa Sunhouse',      3450000, 25, 12, 1);
+('SP001', N'Tủ lạnh LG Inverter 240L',   12000000, 15, 24, N'Đang bán'),
+('SP002', N'TV Samsung 4K 55 inch',      18000000,  8, 12, N'Đang bán'),
+('SP003', N'Máy giặt Toshiba 10kg',       9000000, 20, 24, N'Đang bán'),
+('SP004', N'Điều hòa Daikin 1.5HP',      11500000, 12, 24, N'Đang bán'),
+('SP005', N'Tủ lạnh Samsung 488L',       25000000,  5, 24, N'Đang bán'),
+('SP006', N'Máy giặt LG TurboWash 10kg', 10250000,  0, 24, N'Tạm ngưng'),
+('SP007', N'Smart TV Sony 4K 65 inch',   32000000,  3, 24, N'Đang bán'),
+('SP008', N'Quạt điều hòa Sunhouse',      3450000, 25, 12, N'Đang bán');
 GO
 
 -- 4.6. Khách hàng
 INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, 
                       diemTichLuy, loaiKH) VALUES
-('KH001', N'Nguyễn Thị Mai',  '0911111111', 1500, 'TOT'),
+('KH001', N'Nguyễn Thị Mai',  '0911111111', 1500, 'KH_VIP'),
 ('KH002', N'Trần Văn Nam',    '0922222222',  350, 'KH_MOI'),
-('KH003', N'Lê Thị Hoa',      '0933333333', 2200, 'TOT'),
+('KH003', N'Lê Thị Hoa',      '0933333333', 2200, 'KH_VIP'),
 ('KH004', N'Phạm Văn Tùng',   '0944444444',  100, 'KH_MOI'),
 ('KH005', N'Hoàng Thị Lan',   '0955555555',   80, 'KH_MOI'),
-('KH006', N'Vũ Văn Khánh',    '0966666666',    0, 'NOXAU'),
-('KH007', N'Đặng Thị Thu',    '0977777777',  500, 'TOT');
+('KH006', N'Vũ Văn Khánh',    '0966666666',    0, 'KH_MOI'),
+('KH007', N'Đặng Thị Thu',    '0977777777',  500, 'KH_VIP');
 GO
 
 -- 4.7. Khuyến mãi

@@ -12,30 +12,30 @@ import java.util.List;
 
 public class SanPhamDAO implements IDAO<SanPham> {
 
-    private static SanPham mapSanPham(ResultSet rs) throws SQLException {
-        int ton = rs.getInt("soLuongTon");
+	private static SanPham mapSanPham(ResultSet rs) throws SQLException {
+	    String trangThaiSQL = rs.getString("trangThai");
+	    TrangThaiSanPham tt = TrangThaiSanPham.TAM_NGUNG;
 
-        TrangThaiSanPham tt;
-        if (!rs.getBoolean("trangThai")) {
-            tt = TrangThaiSanPham.TAM_NGUNG;
-        } else if (ton > 0) {
-            tt = TrangThaiSanPham.CON_BAN;
-        } else {
-            tt = TrangThaiSanPham.HET_HANG;
-        }
+	    for (TrangThaiSanPham t : TrangThaiSanPham.values()) {
+	        if (t.toString().equalsIgnoreCase(trangThaiSQL)
+	                || t.name().equalsIgnoreCase(trangThaiSQL)) {
+	            tt = t;
+	            break;
+	        }
+	    }
 
-        SanPham sp = new SanPham(
-                rs.getString("maSanPham"),
-                rs.getString("tenSanPham"),
-                rs.getDouble("giaBan"),
-                ton,
-                null,
-                tt
-        );
+	    SanPham sp = new SanPham(
+	            rs.getString("maSanPham"),
+	            rs.getString("tenSanPham"),
+	            rs.getDouble("giaBan"),
+	            rs.getInt("soLuongTon"),
+	            null,
+	            tt
+	    );
 
-        sp.datBaoHanhThang(rs.getInt("thoiHanBaoHanh"));
-        return sp;
-    }
+	    sp.datBaoHanhThang(rs.getInt("thoiHanBaoHanh"));
+	    return sp;
+	}
 
     private static boolean dangKinhDoanh(SanPham s) {
         return s.getTrangThai() != TrangThaiSanPham.TAM_NGUNG;
@@ -74,7 +74,7 @@ public class SanPhamDAO implements IDAO<SanPham> {
             ps.setDouble(3, s.getGiaBan());
             ps.setInt(4, s.getSoLuongTon());
             ps.setInt(5, s.baoHanhThang());
-            ps.setBoolean(6, dangKinhDoanh(s));
+            ps.setString(6, s.getTrangThai().toString());
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class SanPhamDAO implements IDAO<SanPham> {
             ps.setDouble(2, s.getGiaBan());
             ps.setInt(3, s.getSoLuongTon());
             ps.setInt(4, s.baoHanhThang());
-            ps.setBoolean(5, dangKinhDoanh(s));
+            ps.setString(5, s.getTrangThai().toString());
             ps.setString(6, s.getMaSanPham());
 
             return ps.executeUpdate() > 0;

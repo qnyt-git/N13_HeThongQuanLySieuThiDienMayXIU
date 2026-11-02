@@ -188,7 +188,7 @@ public final class DanhMuc {
         return new CrudPanel<>("Chương trình khuyến mãi", new KhuyenMaiDAO(),
                 new String[]{"Mã KM", "Tên khuyến mãi", "Giá trị giảm (%)", "Ngày bắt đầu", "Ngày kết thúc", "Ghi chú", "Trạng thái"},
                 k -> new Object[]{k.getMaKhuyenMai(), k.getTenKhuyenMai(), (int) k.getGiaTriGiam(), Fmt.date(k.getThoiGianBatDau()),
-                        Fmt.date(k.getThoiGianKetThuc()), k.trangThaiText()},
+                        Fmt.date(k.getThoiGianKetThuc()), "", k.trangThaiText()},
                 List.of(F.of("Tên khuyến mãi", Kind.NAME),
                         F.of("Giá trị giảm (%)", Kind.INT_POS),
                         F.of("Ngày bắt đầu", Kind.DATE).def(() -> Fmt.date(LocalDate.now())),
@@ -199,7 +199,7 @@ public final class DanhMuc {
                 (k, v) -> {
                     k.setTenKhuyenMai((String) v[1]); k.setGiaTriGiam((Integer) v[2]);
                     k.datThoiGian(Fmt.parseDate((String) v[3]), Fmt.parseDate((String) v[4]));
-                    k.setTrangThai(AD.equals(v[5]));
+                    k.setTrangThai(AD.equals(v[6]));
                 }) {
             @Override protected String validateRow(Object[] v, KhuyenMai e) {
                 if ((Integer) v[2] > 100) return "Giá trị giảm không được vượt quá 100%";

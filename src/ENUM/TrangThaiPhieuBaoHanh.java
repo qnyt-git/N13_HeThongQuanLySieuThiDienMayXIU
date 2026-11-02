@@ -2,8 +2,7 @@ package ENUM;
 
 public enum TrangThaiPhieuBaoHanh {
 
-    DA_XAC_NHAN("Tiếp nhận"),
-    DANG_XU_LY("Đang xử lý"),
+    DA_XAC_NHAN("Đã xác nhận"),
     DA_HOAN_THANH("Đã trả"),
     DA_HUY("Đã hủy");
 
