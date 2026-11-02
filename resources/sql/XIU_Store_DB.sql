@@ -1,6 +1,6 @@
 -- ============================================================
 -- HỆ THỐNG QUẢN LÝ SIÊU THỊ ĐIỆN MÁY XIU
--- Script khởi tạo toàn bộ Database, Bảng và Dữ liệu mẫu (Đã thêm Địa chỉ KH)
+-- Script khởi tạo toàn bộ Database, Bảng và Dữ liệu mẫu (Bản hoàn chỉnh)
 -- ============================================================
 
 USE master;
@@ -57,11 +57,11 @@ CREATE TABLE SanPham (
     giaBan          FLOAT           CHECK (giaBan > 0),
     soLuongTon      INT             CHECK (soLuongTon >= 0),
     thoiHanBaoHanh  INT             CHECK (thoiHanBaoHanh >= 0),
-    trangThai NVARCHAR(20) NOT NULL CHECK (trangThai IN (N'Đang bán',N'Tạm ngưng',N'Hết hàng',N'Vô hiệu hóa'))
+    trangThai       NVARCHAR(20)    NOT NULL CHECK (trangThai IN (N'Đang bán',N'Tạm ngưng',N'Hết hàng',N'Vô hiệu hóa'))
 );
 GO
 
--- 3.4. Khách hàng (Đã bổ sung cột diaChi)
+-- 3.4. Khách hàng (Đã có cột diaChi)
 CREATE TABLE KhachHang (
     maKhachHang     VARCHAR(10)     PRIMARY KEY,
     hoTenKhachHang  NVARCHAR(100)   NOT NULL,
@@ -114,13 +114,14 @@ CREATE TABLE PhanCa (
 );
 GO
 
--- 3.9. Phiếu đặt hàng
+-- 3.9. Phiếu đặt hàng (Đã tích hợp thêm maKhuyenMai)
 CREATE TABLE PhieuDatHang (
     maPhieuDatHang  VARCHAR(10)     PRIMARY KEY,
     ngayDatHang     DATETIME        DEFAULT GETDATE(),
     trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Chờ xử lý', N'Đã xác nhận', N'Đã hoàn thành', N'Đã hủy')),
     maKhachHang     VARCHAR(10)     REFERENCES KhachHang(maKhachHang),
     maNhanVien      VARCHAR(10)     REFERENCES NhanVien(maNhanVien),
+    maKhuyenMai     VARCHAR(10)     NULL REFERENCES KhuyenMai(maKhuyenMai),
     ghiChu          NVARCHAR(500)
 );
 GO
@@ -166,7 +167,7 @@ CREATE TABLE PhieuNhapKho (
     ngayNhap        DATETIME        DEFAULT GETDATE(),
     lyDoNhap        NVARCHAR(500),
     maNhanVien      VARCHAR(10)     REFERENCES NhanVien(maNhanVien),
-    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Chờ duyệt', N'Đã xác nhận',N'Đã hoàn thành', N'Đã hủy')),
+    trangThai       NVARCHAR(20)    CHECK (trangThai IN (N'Chờ duyệt', N'Đã xác nhận', N'Đã hoàn thành', N'Đã hủy')),
     maNCC           VARCHAR(10)     REFERENCES NhaCungCap(maNCC)
 );
 GO
@@ -210,19 +211,19 @@ GO
 INSERT INTO NhanVien(maNhanVien, hoTenNhanVien, chucVu, soDienThoai, ngaySinh, 
                      trinhDoHocVan, heSoLuong, luongCoBan, gioiTinh, trangThai) VALUES
 ('NV001', N'Nguyễn Văn A',  N'Quản lý', '0901234567', '1990-01-15', N'Đại học',   3.5, 5000000, 1, 1),
-('NV002', N'Trần Thị B',    N'NVBH',    '0902222333', '1995-05-20', N'Cao đẳng',  2.4, 5000000, 0,  1),
+('NV002', N'Trần Thị B',    N'NVBH',    '0902222333', '1995-05-20', N'Cao đẳng',  2.4, 5000000, 0, 1),
 ('NV003', N'Lê Văn C',      N'NVBH',    '0903333444', '1993-08-10', N'Đại học',   2.4, 5000000, 1, 1),
-('NV004', N'Phạm Thị D',    N'NVBH',    '0904444555', '1997-03-25', N'Trung cấp', 2.4, 5000000, 0,  1),
+('NV004', N'Phạm Thị D',    N'NVBH',    '0904444555', '1997-03-25', N'Trung cấp', 2.4, 5000000, 0, 1),
 ('NV005', N'Hoàng Văn E',   N'NVKT',    '0905555666', '1992-11-12', N'Đại học',   2.3, 5000000, 1, 1),
-('NV006', N'Vũ Thị F',      N'CSKH',    '0906666777', '1994-07-18', N'Cao đẳng',  2.3, 5000000, 0,  1),
+('NV006', N'Vũ Thị F',      N'CSKH',    '0906666777', '1994-07-18', N'Cao đẳng',  2.3, 5000000, 0, 1),
 ('NV007', N'Đặng Văn G',    N'CSKH',    '0907777888', '1996-09-30', N'Đại học',   2.3, 5000000, 1, 1),
-('NV008', N'Bùi Thị H',     N'NVKho',   '0908888999', '1991-02-14', N'Trung cấp', 2.3, 5000000, 0,  1),
+('NV008', N'Bùi Thị H',     N'NVKho',   '0908888999', '1991-02-14', N'Trung cấp', 2.3, 5000000, 0, 1),
 ('NV009', N'Ngô Văn I',     N'NVKho',   '0909999000', '1998-06-22', N'Cao đẳng',  2.3, 5000000, 1, 1),
-('NV010', N'Đỗ Thị K',      N'NVKT_BH', '0910111222', '1993-04-05', N'Đại học',   2.5, 5500000, 0,  1),
+('NV010', N'Đỗ Thị K',      N'NVKT_BH', '0910111222', '1993-04-05', N'Đại học',   2.5, 5500000, 0, 1),
 ('NV011', N'Lý Văn L',      N'NVBH',    '0911222333', '1995-12-20', N'Trung cấp', 2.4, 5000000, 1, 0);
 GO
 
--- 4.2. Tài khoản
+-- 4.2. Tài khoản nhân viên
 INSERT INTO TaiKhoanNhanVien(maTaiKhoan, tenDangNhap, matKhau, loaiQuyen, 
                            trangThai, maNhanVien) VALUES
 ('TK001', 'admin',     '123456', 'QUAN_LY',  1, 'NV001'),
@@ -267,7 +268,7 @@ INSERT INTO SanPham(maSanPham, tenSanPham, giaBan, soLuongTon,
 ('SP008', N'Quạt điều hòa Sunhouse',     3450000, 25, 12, N'Đang bán');
 GO
 
--- 4.6. Khách hàng (Đã bổ sung dữ liệu địa chỉ)
+-- 4.6. Khách hàng (Đã điền đầy đủ thông tin địa chỉ)
 INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, diaChi, 
                       diemTichLuy, loaiKH) VALUES
 ('KH001', N'Nguyễn Thị Mai',  '0911111111', N'123 Nguyễn Trãi, Q.5, TP.HCM', 1500, 'KH_VIP'),
