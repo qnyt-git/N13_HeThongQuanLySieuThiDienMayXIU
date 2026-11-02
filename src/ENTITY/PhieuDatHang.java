@@ -13,6 +13,7 @@ public class PhieuDatHang {
     private LocalDateTime ngayDatHang;
     private TrangThaiPhieuDatHang trangThai; // đã xác nhận/đã hoàn thành/đã hủy
     private String ghiChu;
+    private KhuyenMai maKhuyenMai; // Khuyen mai da chon khi lap phieu dat hang
     private List<ChiTietPhieuDatHang> chiTietList = new ArrayList<>();
 
     public PhieuDatHang() {}
@@ -39,6 +40,8 @@ public class PhieuDatHang {
     public void setTrangThai(TrangThaiPhieuDatHang trangThai) { this.trangThai = trangThai; }
     public String getGhiChu() { return ghiChu; }
     public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
+    public KhuyenMai getMaKhuyenMai() { return maKhuyenMai; }
+    public void setMaKhuyenMai(KhuyenMai maKhuyenMai) { this.maKhuyenMai = maKhuyenMai; }
     public List<ChiTietPhieuDatHang> getChiTietList() { return chiTietList; }
     public void setChiTietList(List<ChiTietPhieuDatHang> l) { this.chiTietList = l; }
 
