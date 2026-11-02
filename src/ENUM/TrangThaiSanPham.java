@@ -4,7 +4,8 @@ package ENUM;
 public enum TrangThaiSanPham {
     CON_BAN("Đang bán"),
     TAM_NGUNG("Tạm ngưng"),
-    HET_HANG("Hết hàng");
+    HET_HANG("Hết hàng"),
+	VO_HIEU_HOA("Vô hiệu hóa");
 
     private final String nhan;
 
