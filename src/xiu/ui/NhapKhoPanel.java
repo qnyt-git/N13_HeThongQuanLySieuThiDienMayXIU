@@ -161,7 +161,7 @@ public class NhapKhoPanel extends JPanel implements Refreshable {
         if (tfLyDo.getText().trim().isEmpty()) { JOptionPane.showMessageDialog(this, "Lý do nhập không được để trống", "Thông báo", JOptionPane.WARNING_MESSAGE); tfLyDo.requestFocus(); return; }
         if (dong.isEmpty()) { JOptionPane.showMessageDialog(this, "Phiếu nhập chưa có sản phẩm", "Thông báo", JOptionPane.WARNING_MESSAGE); return; }
         PhieuNhapKho p = new PhieuNhapKho(pnkDao.taoMaMoi(), LocalDateTime.now(), PhienLamViec.nhanVien(),
-                (NhaCungCap) cbNcc.getSelectedItem(), tfLyDo.getText().trim(), TrangThaiPhieuNhapKho.CHO_DUYET, "");
+                (NhaCungCap) cbNcc.getSelectedItem(), tfLyDo.getText().trim(), TrangThaiPhieuNhapKho.CHO_DUYET);
         for (Dong d : dong) p.taoChiTiet(d.sp, d.sl, d.gia);
         if (!pnkDao.them(p)) { JOptionPane.showMessageDialog(this, "Không lưu được phiếu nhập", "Lỗi", JOptionPane.ERROR_MESSAGE); return; }
         if (confirm && quyenDuyet) { p.xacNhan(); luuSauXacNhan(p); }
