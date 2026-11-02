@@ -129,8 +129,8 @@ public class SanPham {
 
 	/** "24 tháng" -> 24. */
 	public int baoHanhThang() {
-		String s = thoiHanBaoHanh == null ? "" : thoiHanBaoHanh.replaceAll("\\D", "");
-		return s.isEmpty() ? 0 : Integer.parseInt(s);
+	    String s = thoiHanBaoHanh == null ? "" : thoiHanBaoHanh.replaceAll("\\D", "");
+	    return s.isEmpty() ? 0 : Integer.parseInt(s);
 	}
 
 	public void datBaoHanhThang(int thang) {
@@ -149,6 +149,7 @@ public class SanPham {
 
 	/** Còn trong thời hạn bảo hành kể từ ngày mua. */
 	public boolean conBaoHanh(java.time.LocalDateTime ngayMua) {
-		return ngayMua != null && !ngayMua.plusMonths(baoHanhThang()).isBefore(java.time.LocalDateTime.now());
+	    return ngayMua != null && !ngayMua.plusMonths(baoHanhThang())
+	            .isBefore(java.time.LocalDateTime.now());
 	}
 }

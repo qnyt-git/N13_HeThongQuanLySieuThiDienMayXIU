@@ -115,13 +115,30 @@ public class BaoHanhPanel extends JPanel implements Refreshable {
         return ds.get(tbList.convertRowIndexToModel(r));
     }
 
-    /** Còn bảo hành nếu khách đã mua (hóa đơn đã thanh toán) trong thời hạn bảo hành của sản phẩm. */
+    /**
+     * Còn bảo hành nếu khách đã mua sản phẩm trên hóa đơn đã thanh toán và ngày tiếp nhận vẫn nằm trong thời hạn bảo hành.
+     */
     private boolean conBaoHanh(KhachHang kh, SanPham sp) {
+        if (kh == null || sp == null) return false;
+
         for (HoaDon h : hdDao.getAll()) {
-            if (!h.getMaKhachHang().equals(kh) || !h.daThanhToan()) continue;
-            for (ChiTietHoaDon c : h.getChiTietList())
-                if (c.getMaSanPham().equals(sp) && sp.conBaoHanh(h.getNgayLap())) return true;
+            if (h.getMaKhachHang() == null
+                    || !h.getMaKhachHang().getMaKhachHang()
+                         .equals(kh.getMaKhachHang())
+                    || !h.daThanhToan()) {
+                continue;
+            }
+
+            for (ChiTietHoaDon c : h.getChiTietList()) {
+                if (c.getMaSanPham() != null
+                        && c.getMaSanPham().getMaSanPham()
+                             .equals(sp.getMaSanPham())
+                        && sp.conBaoHanh(h.getNgayLap())) {
+                    return true;
+                }
+            }
         }
+
         return false;
     }
 

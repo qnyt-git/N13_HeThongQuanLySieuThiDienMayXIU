@@ -23,13 +23,18 @@ import java.util.Map;
  */
 public class PhieuBaoHanhDAO implements IDAO<PhieuBaoHanh> {
 
-    private static TrangThaiPhieuBaoHanh docTrangThai(String s) {
-        String x = s == null ? "" : s.trim();
-        for (TrangThaiPhieuBaoHanh t : TrangThaiPhieuBaoHanh.values()) {
-            if (t.name().equalsIgnoreCase(x) || t.toString().equalsIgnoreCase(x)) return t;
-        }
-        return TrangThaiPhieuBaoHanh.DA_XAC_NHAN;
-    }
+	private static TrangThaiPhieuBaoHanh docTrangThai(String s) {
+	    String x = s == null ? "" : s.trim();
+
+	    for (TrangThaiPhieuBaoHanh t : TrangThaiPhieuBaoHanh.values()) {
+	        if (t.name().equalsIgnoreCase(x)
+	                || t.toString().equalsIgnoreCase(x)) {
+	            return t;
+	        }
+	    }
+
+	    throw new IllegalArgumentException("Trạng thái phiếu bảo hành không hợp lệ: " + s);
+	}
 
     private static LocalDateTime toLdt(Timestamp t) {
         return t == null ? null : t.toLocalDateTime();
