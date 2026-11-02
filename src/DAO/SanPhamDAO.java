@@ -1,156 +1,155 @@
+package ENTITY;
 
-package DAO;
+import java.util.Objects;
+import ENUM.*;
 
-import ENTITY.SanPham;
-import ENUM.TrangThaiSanPham;
+public class SanPham {
+	private String maSanPham;
+	private String tenSanPham;
+	private double giaBan;
+	private int soLuongTon;
+	private String thoiHanBaoHanh; // 1 năm/12 tháng; 2 năm......
+	private TrangThaiSanPham trangThai; // đang bán/tạm ngưng/hết hàng
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+	public SanPham() {
+	}
 
-public class SanPhamDAO implements IDAO<SanPham> {
+	public SanPham(String maSanPham, String tenSanPham, double giaBan, int soLuongTon, String thoiHanBaoHanh,
+			TrangThaiSanPham trangThai) {
+		this.maSanPham = maSanPham;
+		this.tenSanPham = tenSanPham;
+		this.giaBan = giaBan;
+		this.soLuongTon = soLuongTon;
+		this.thoiHanBaoHanh = thoiHanBaoHanh;
+		this.trangThai = trangThai;
+	}
 
-    private static SanPham mapSanPham(ResultSet rs) throws SQLException {
-        int ton = rs.getInt("soLuongTon");
+	public String getMaSanPham() {
+		return maSanPham;
+	}
 
-        TrangThaiSanPham tt = null;
-        // Doc BIT an toan: SQL Server tra ve Boolean, mot so driver/nguon du lieu co the tra Number.
-        Object rawTrangThai = rs.getObject("trangThai");
-        boolean dangHoatDong = rawTrangThai != null && (
-                rawTrangThai instanceof Boolean ? (Boolean) rawTrangThai
-                : rawTrangThai instanceof Number ? ((Number) rawTrangThai).intValue() != 0
-                : "1".equals(rawTrangThai.toString())
-                    || "true".equalsIgnoreCase(rawTrangThai.toString())
-                    || "hoạt động".equalsIgnoreCase(rawTrangThai.toString())
-        );
+	public void setMaSanPham(String maSanPham) {
+		this.maSanPham = maSanPham;
+	}
 
-        String trangThai = rs.getString("trangThai");
+	public String getTenSanPham() {
+		return tenSanPham;
+	}
 
-        if ("Đang bán".equals(trangThai)) {
-            tt = TrangThaiSanPham.CON_BAN;
-        } else if ("Tạm ngưng".equals(trangThai)) {
-            tt = TrangThaiSanPham.TAM_NGUNG;
-        }else if ("Hết hàng".equals(trangThai)) {
-            tt = TrangThaiSanPham.HET_HANG;
-        }else if ("Vô hiệu hóa".equals(trangThai)) {
-            tt = TrangThaiSanPham.VO_HIEU_HOA;
-        }
+	public void setTenSanPham(String tenSanPham) {
+		this.tenSanPham = tenSanPham;
+	}
 
-        SanPham sp = new SanPham(
-                rs.getString("maSanPham"),
-                rs.getString("tenSanPham"),
-                rs.getDouble("giaBan"),
-                ton,
-                null,
-                tt
-        );
+	public double getGiaBan() {
+		return giaBan;
+	}
 
-        sp.datBaoHanhThang(rs.getInt("thoiHanBaoHanh"));
-        return sp;
-    }
+	public void setGiaBan(double giaBan) {
+		this.giaBan = giaBan;
+	}
 
-    private static boolean dangKinhDoanh(SanPham s) {
-        return s.getTrangThai() != TrangThaiSanPham.TAM_NGUNG;
-    }
+	public int getSoLuongTon() {
+		return soLuongTon;
+	}
 
-    @Override
-    public List<SanPham> getAll() {
-        List<SanPham> ds = new ArrayList<>();
+	public void setSoLuongTon(int soLuongTon) {
+		this.soLuongTon = soLuongTon;
+	}
 
-        String sql = "SELECT maSanPham, tenSanPham, giaBan, soLuongTon, "
-                + "thoiHanBaoHanh, trangThai "
-                + "FROM SanPham ORDER BY maSanPham";
+	public String getThoiHanBaoHanh() {
+		return thoiHanBaoHanh;
+	}
 
-        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+	public void setThoiHanBaoHanh(String thoiHanBaoHanh) {
+		this.thoiHanBaoHanh = thoiHanBaoHanh;
+	}
 
-            while (rs.next()) {
-                ds.add(mapSanPham(rs));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	public TrangThaiSanPham getTrangThai() {
+		return trangThai;
+	}
 
-        return ds;
-    }
+	public void setTrangThai(TrangThaiSanPham trangThai) {
+		this.trangThai = trangThai;
+	}
 
-    @Override
-    public boolean them(SanPham s) {
-        String sql = "INSERT INTO SanPham(maSanPham, tenSanPham, giaBan, "
-                + "soLuongTon, thoiHanBaoHanh, trangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+	// ===== METHOD BỔ SUNG =====
+	/** Kiểm tra còn hàng để bán */
+	public boolean conHang() {
+		return soLuongTon > 0 && trangThai != TrangThaiSanPham.HET_HANG;
+	}
 
-        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, s.getMaSanPham());
-            ps.setString(2, s.getTenSanPham());
-            ps.setDouble(3, s.getGiaBan());
-            ps.setInt(4, s.getSoLuongTon());
-            ps.setInt(5, s.baoHanhThang());
-            ps.setBoolean(6, dangKinhDoanh(s));
+	/** Cập nhật tồn kho (nhập thêm) */
+	public void nhapKho(int soLuong) {
+		if (soLuong <= 0)
+			throw new IllegalArgumentException("Số lượng nhập phải > 0");
+		this.soLuongTon += soLuong;
+		if (this.trangThai == TrangThaiSanPham.HET_HANG) {
+			this.trangThai = TrangThaiSanPham.CON_BAN;
+		}
+	}
 
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	/** Xuất kho (bán) */
+	public boolean xuatKho(int soLuong) {
+		if (soLuong <= 0)
+			return false;
+		if (soLuong > this.soLuongTon)
+			return false;
+		this.soLuongTon -= soLuong;
+		if (this.soLuongTon == 0) {
+			this.trangThai = TrangThaiSanPham.HET_HANG;
+		}
+		return true;
+	}
 
-        return false;
-    }
+	/** Kiểm tra có đang bán được không */
+	public boolean coTheBan() {
+		return trangThai == TrangThaiSanPham.CON_BAN;
+	}
 
-    @Override
-    public boolean capNhat(SanPham s) {
-        String sql = "UPDATE SanPham SET tenSanPham = ?, giaBan = ?, "
-                + "soLuongTon = ?, thoiHanBaoHanh = ?, trangThai = ? "
-                + "WHERE maSanPham = ?";
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof SanPham))
+			return false;
+		return Objects.equals(maSanPham, ((SanPham) o).maSanPham);
+	}
 
-        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, s.getTenSanPham());
-            ps.setDouble(2, s.getGiaBan());
-            ps.setInt(3, s.getSoLuongTon());
-            ps.setInt(4, s.baoHanhThang());
-            ps.setBoolean(5, dangKinhDoanh(s));
-            ps.setString(6, s.getMaSanPham());
+	@Override
+	public int hashCode() {
+		return Objects.hash(maSanPham);
+	}
 
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	@Override
+	public String toString() {
+		return tenSanPham; // Tiện cho JComboBox
+	}
 
-        return false;
-    }
+	// ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
 
-    @Override
-    public boolean xoa(SanPham s) {
-        String sql = "DELETE FROM SanPham WHERE maSanPham = ?";
+	/** "24 tháng" -> 24. */
+	public int baoHanhThang() {
+	    String s = thoiHanBaoHanh == null ? "" : thoiHanBaoHanh.replaceAll("\\D", "");
+	    return s.isEmpty() ? 0 : Integer.parseInt(s);
+	}
 
-        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, s.getMaSanPham());
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	public void datBaoHanhThang(int thang) {
+		this.thoiHanBaoHanh = thang + " tháng";
+	}
 
-        return false;
-    }
+	/** Bán được với số lượng sl (đang bán và đủ tồn kho). */
+	public boolean coTheBanSoLuong(int sl) {
+		return coTheBan() && sl > 0 && sl <= soLuongTon;
+	}
 
-    @Override
-    public String taoMaMoi() {
-        int max = 0;
+	/** Đang bán nhưng tồn dưới ngưỡng cảnh báo. */
+	public boolean sapHetHang(int nguong) {
+		return coTheBan() && soLuongTon < nguong;
+	}
 
-        String sql = "SELECT MAX(TRY_CAST(SUBSTRING(maSanPham, 3, 10) AS INT)) "
-                + "FROM SanPham";
-
-        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                max = rs.getInt(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return String.format("SP%03d", max + 1);
-    }
+	/** Còn trong thời hạn bảo hành kể từ ngày mua. */
+	public boolean conBaoHanh(java.time.LocalDateTime ngayMua) {
+	    return ngayMua != null && !ngayMua.plusMonths(baoHanhThang())
+	            .isBefore(java.time.LocalDateTime.now());
+	}
 }
