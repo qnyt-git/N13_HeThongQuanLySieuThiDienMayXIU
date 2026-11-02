@@ -1,6 +1,6 @@
-﻿-- ============================================================
+-- ============================================================
 -- HỆ THỐNG QUẢN LÝ SIÊU THỊ ĐIỆN MÁY XIU
--- Script khởi tạo toàn bộ Database, Bảng và Dữ liệu mẫu
+-- Script khởi tạo toàn bộ Database, Bảng và Dữ liệu mẫu (Đã thêm Địa chỉ KH)
 -- ============================================================
 
 USE master;
@@ -61,11 +61,12 @@ CREATE TABLE SanPham (
 );
 GO
 
--- 3.4. Khách hàng
+-- 3.4. Khách hàng (Đã bổ sung cột diaChi)
 CREATE TABLE KhachHang (
     maKhachHang     VARCHAR(10)     PRIMARY KEY,
     hoTenKhachHang  NVARCHAR(100)   NOT NULL,
     soDienThoai     VARCHAR(15)     UNIQUE,
+    diaChi          NVARCHAR(200),
     diemTichLuy     INT             CHECK (diemTichLuy >= 0) DEFAULT 0,
     loaiKH          VARCHAR(20)     CHECK (loaiKH IN ('KH_MOI','KH_VIP'))
 );
@@ -136,16 +137,16 @@ GO
 
 -- 3.11. Hóa đơn
 CREATE TABLE HoaDon (
-    maHoaDon            VARCHAR(10)     PRIMARY KEY,
-    ngayLap             DATETIME        DEFAULT GETDATE(),
+    maHoaDon              VARCHAR(10)     PRIMARY KEY,
+    ngayLap               DATETIME        DEFAULT GETDATE(),
     phuongThucThanhToan NVARCHAR(20)    CHECK (phuongThucThanhToan IN (N'Tiền mặt', N'QR', N'Chuyển khoản')),
-    trangThai           NVARCHAR(20)    CHECK (trangThai IN (N'Chưa thanh toán', N'Đã thanh toán', N'Đã hủy')),
-    lyDoHuyHoaDon       NVARCHAR(500),
-    maPhieuDatHang      VARCHAR(10)     NULL REFERENCES PhieuDatHang(maPhieuDatHang),
-    maKhachHang         VARCHAR(10)     REFERENCES KhachHang(maKhachHang),
-    maNhanVien          VARCHAR(10)     REFERENCES NhanVien(maNhanVien),
-    maKhuyenMai         VARCHAR(10)     NULL REFERENCES KhuyenMai(maKhuyenMai),
-    ghiChu              NVARCHAR(500)
+    trangThai             NVARCHAR(20)    CHECK (trangThai IN (N'Chưa thanh toán', N'Đã thanh toán', N'Đã hủy')),
+    lyDoHuyHoaDon         NVARCHAR(500),
+    maPhieuDatHang        VARCHAR(10)     NULL REFERENCES PhieuDatHang(maPhieuDatHang),
+    maKhachHang           VARCHAR(10)     REFERENCES KhachHang(maKhachHang),
+    maNhanVien            VARCHAR(10)     REFERENCES NhanVien(maNhanVien),
+    maKhuyenMai           VARCHAR(10)     NULL REFERENCES KhuyenMai(maKhuyenMai),
+    ghiChu                NVARCHAR(500)
 );
 GO
 
@@ -193,10 +194,10 @@ GO
 
 -- 3.16. Chi tiết phiếu bảo hành
 CREATE TABLE ChiTietPhieuBaoHanh (
-    maPhieuBaoHanh      VARCHAR(10)     REFERENCES PhieuBaoHanh(maPhieuBaoHanh),
-    maSanPham           VARCHAR(10)     REFERENCES SanPham(maSanPham),
-    tinhTrangSanPham    NVARCHAR(500)   NOT NULL,
-    noiDungBaoHanh      NVARCHAR(500)   NOT NULL,
+    maPhieuBaoHanh       VARCHAR(10)     REFERENCES PhieuBaoHanh(maPhieuBaoHanh),
+    maSanPham            VARCHAR(10)     REFERENCES SanPham(maSanPham),
+    tinhTrangSanPham     NVARCHAR(500)   NOT NULL,
+    noiDungBaoHanh       NVARCHAR(500)   NOT NULL,
     PRIMARY KEY (maPhieuBaoHanh, maSanPham)
 );
 GO
@@ -223,7 +224,7 @@ GO
 
 -- 4.2. Tài khoản
 INSERT INTO TaiKhoanNhanVien(maTaiKhoan, tenDangNhap, matKhau, loaiQuyen, 
-                             trangThai, maNhanVien) VALUES
+                           trangThai, maNhanVien) VALUES
 ('TK001', 'admin',     '123456', 'QUAN_LY',  1, 'NV001'),
 ('TK002', 'banhang',   '123456', 'BAN_HANG', 1, 'NV002'),
 ('TK003', 'banhang2',  '123456', 'BAN_HANG', 1, 'NV003'),
@@ -258,24 +259,24 @@ INSERT INTO SanPham(maSanPham, tenSanPham, giaBan, soLuongTon,
                     thoiHanBaoHanh, trangThai) VALUES
 ('SP001', N'Tủ lạnh LG Inverter 240L',   12000000, 15, 24, N'Đang bán'),
 ('SP002', N'TV Samsung 4K 55 inch',      18000000,  8, 12, N'Đang bán'),
-('SP003', N'Máy giặt Toshiba 10kg',       9000000, 20, 24, N'Đang bán'),
+('SP003', N'Máy giặt Toshiba 10kg',      9000000, 20, 24, N'Đang bán'),
 ('SP004', N'Điều hòa Daikin 1.5HP',      11500000, 12, 24, N'Đang bán'),
 ('SP005', N'Tủ lạnh Samsung 488L',       25000000,  5, 24, N'Đang bán'),
 ('SP006', N'Máy giặt LG TurboWash 10kg', 10250000,  0, 24, N'Tạm ngưng'),
 ('SP007', N'Smart TV Sony 4K 65 inch',   32000000,  3, 24, N'Đang bán'),
-('SP008', N'Quạt điều hòa Sunhouse',      3450000, 25, 12, N'Đang bán');
+('SP008', N'Quạt điều hòa Sunhouse',     3450000, 25, 12, N'Đang bán');
 GO
 
--- 4.6. Khách hàng
-INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, 
+-- 4.6. Khách hàng (Đã bổ sung dữ liệu địa chỉ)
+INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, diaChi, 
                       diemTichLuy, loaiKH) VALUES
-('KH001', N'Nguyễn Thị Mai',  '0911111111', 1500, 'KH_VIP'),
-('KH002', N'Trần Văn Nam',    '0922222222',  350, 'KH_MOI'),
-('KH003', N'Lê Thị Hoa',      '0933333333', 2200, 'KH_VIP'),
-('KH004', N'Phạm Văn Tùng',   '0944444444',  100, 'KH_MOI'),
-('KH005', N'Hoàng Thị Lan',   '0955555555',   80, 'KH_MOI'),
-('KH006', N'Vũ Văn Khánh',    '0966666666',    0, 'KH_MOI'),
-('KH007', N'Đặng Thị Thu',    '0977777777',  500, 'KH_VIP');
+('KH001', N'Nguyễn Thị Mai',  '0911111111', N'123 Nguyễn Trãi, Q.5, TP.HCM', 1500, 'KH_VIP'),
+('KH002', N'Trần Văn Nam',    '0922222222', N'45 Lê Lợi, Q.1, TP.HCM',      350,  'KH_MOI'),
+('KH003', N'Lê Thị Hoa',      '0933333333', N'78 CMT8, Q.10, TP.HCM',      2200, 'KH_VIP'),
+('KH004', N'Phạm Văn Tùng',   '0944444444', N'12 Điện Biên Phủ, Q.Bình Thạnh, TP.HCM', 100, 'KH_MOI'),
+('KH005', N'Hoàng Thị Lan',   '0955555555', N'90 Lê Văn Việt, TP. Thủ Đức', 80,   'KH_MOI'),
+('KH006', N'Vũ Văn Khánh',    '0966666666', N'15 Quang Trung, Q.Gò Vấp, TP.HCM', 0,   'KH_MOI'),
+('KH007', N'Đặng Thị Thu',    '0977777777', N'34 Nguyễn Văn Bảo, Q.Gò Vấp, TP.HCM', 500, 'KH_VIP');
 GO
 
 -- 4.7. Khuyến mãi
@@ -284,3 +285,4 @@ INSERT INTO KhuyenMai(maKhuyenMai, tenKhuyenMai, ngayBatDau, ngayKetThuc,
 ('KM001', N'Khai trương - Giảm 10%',   '2024-01-01', '2030-12-31', 10, 1),
 ('KM002', N'Black Friday - Giảm 20%',  '2024-11-20', '2024-12-05', 20, 1),
 ('KM003', N'Tết 2025 - Giảm 15%',      '2025-01-15', '2025-02-15', 15, 1);
+GO
