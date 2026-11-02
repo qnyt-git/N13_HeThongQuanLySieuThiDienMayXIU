@@ -28,7 +28,7 @@ public final class Theme {
     private static final Set<String> BAD = new HashSet<>(List.of("Tạm khóa", "Đã hủy", "Ngừng", "Ngừng bán", "Nghỉ",
             "Nghỉ việc", "Quá hạn", "Hết hàng"));
     private static final Set<String> WARN = new HashSet<>(List.of("Chờ xử lý", "Chưa thanh toán", "Chờ xác nhận",
-            "Đã phân", "Đang xử lý", "Chờ duyệt", "Khách mới"));
+            "Đã phân", "Đang xử lý", "Chờ duyệt", "Khách mới", "Tạm ngưng"));
     private static final Set<String> MONEY_COLS = new HashSet<>(List.of("Giá bán", "Lương cơ bản", "Tổng tiền",
             "Thành tiền", "Đơn giá", "Giảm giá"));
 
