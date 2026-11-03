@@ -22,7 +22,7 @@ public class KhachHangDAO implements IDAO<KhachHang> {
     @Override
     public List<KhachHang> getAll() {
         List<KhachHang> ds = new ArrayList<>();
-        String sql = "SELECT maKhachHang, hoTenKhachHang, soDienThoai, diaChi, diemTichLuy, loaiKH "
+        String sql = "SELECT maKhachHang, hoTenKhachHang, soDienThoai, diemTichLuy, loaiKH "
                 + "FROM KhachHang ORDER BY maKhachHang";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
@@ -35,7 +35,6 @@ public class KhachHangDAO implements IDAO<KhachHang> {
                         rs.getString("soDienThoai"),
                         rs.getInt("diemTichLuy"),
                         docLoaiKH(rs.getString("LoaiKH"))));
-                ds.get(ds.size() - 1).setDiaChi(rs.getString("diaChi"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,16 +44,15 @@ public class KhachHangDAO implements IDAO<KhachHang> {
 
     @Override
     public boolean them(KhachHang k) {
-        String sql = "INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, diaChi, diemTichLuy, loaiKH) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO KhachHang(maKhachHang, hoTenKhachHang, soDienThoai, diemTichLuy, loaiKH) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, k.getMaKhachHang());
             ps.setString(2, k.getHoTenKhachHang());
             ps.setString(3, k.getSoDienThoai());
-            ps.setString(4, k.getDiaChi());
-            ps.setInt(5, k.getDiemTichLuy());
-            ps.setString(6, k.getLoaiKH().name());
+            ps.setInt(4, k.getDiemTichLuy());
+            ps.setString(5, k.getLoaiKH().name());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,16 +62,15 @@ public class KhachHangDAO implements IDAO<KhachHang> {
 
     @Override
     public boolean capNhat(KhachHang k) {
-        String sql = "UPDATE KhachHang SET hoTenKhachHang = ?, soDienThoai = ?, diaChi = ?, diemTichLuy = ?, "
+    	String sql = "UPDATE KhachHang SET hoTenKhachHang = ?, soDienThoai = ?,diemTichLuy = ?, "
                 + "loaiKH = ? WHERE maKhachHang = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
             ps.setString(1, k.getHoTenKhachHang());
             ps.setString(2, k.getSoDienThoai());
-            ps.setString(3, k.getDiaChi());
-            ps.setInt(4, k.getDiemTichLuy());
-            ps.setString(5, k.getLoaiKH().name());
-            ps.setString(6, k.getMaKhachHang());
+            ps.setInt(3, k.getDiemTichLuy());
+            ps.setString(4, k.getLoaiKH().name());
+            ps.setString(5, k.getMaKhachHang());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

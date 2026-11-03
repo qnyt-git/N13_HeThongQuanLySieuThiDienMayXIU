@@ -62,9 +62,7 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
     /** Nạp phiếu đặt hàng khi đã có sẵn các bảng tra cứu (để HoaDonDAO không phải truy vấn lặp lại). */
     List<PhieuDatHang> getAll(Map<String, KhachHang> kh, Map<String, NhanVien> nv, Map<String, SanPham> sp) {
         List<PhieuDatHang> ds = new ArrayList<>();
-        Map<String, ENTITY.KhuyenMai> km = new HashMap<>();
-        for (ENTITY.KhuyenMai k : new KhuyenMaiDAO().getAll()) km.put(k.getMaKhuyenMai(), k);
-        String sql = "SELECT maPhieuDatHang, maKhachHang, maNhanVien, ngayDatHang, trangThai, ghiChu, maKhuyenMai "
+        String sql = "SELECT maPhieuDatHang, maKhachHang, maNhanVien, ngayDatHang, trangThai, ghiChu "
                 + "FROM PhieuDatHang WHERE trangThai <> N'Đã hủy' ORDER BY maPhieuDatHang";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
@@ -79,7 +77,6 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
         	            docTrangThai(rs.getString("trangThai")),
         	            rs.getString("ghiChu")
         	    ));
-                    ds.get(ds.size() - 1).setMaKhuyenMai(km.get(rs.getString("maKhuyenMai")));
         	}
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,8 +107,8 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
     }
 
     private boolean themPhieu(Connection con, PhieuDatHang p) {
-        String sql = "INSERT INTO PhieuDatHang(maPhieuDatHang, maKhachHang, maNhanVien, ngayDatHang, trangThai, ghiChu, maKhuyenMai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    	String sql = "INSERT INTO PhieuDatHang(maPhieuDatHang, maKhachHang, maNhanVien, ngayDatHang, trangThai, ghiChu) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, p.getMaPhieuDatHang());
@@ -120,7 +117,6 @@ public class PhieuDatHangDAO implements IDAO<PhieuDatHang> {
             ps.setTimestamp(4, toTs(p.getNgayDatHang()));
             ps.setString(5, p.daXacNhan() ? "Đã xác nhận" : "Chờ xử lý");
             ps.setString(6, p.getGhiChu());
-            ps.setString(7, p.getMaKhuyenMai() == null ? null : p.getMaKhuyenMai().getMaKhuyenMai());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
