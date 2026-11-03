@@ -27,7 +27,7 @@ public class ChiTietHoaDon {
     public double getDonGia() { return donGia; }
     public void setDonGia(double donGia) { this.donGia = donGia; }
 
-    // ===== METHOD BỔ SUNG =====
+   
     public double thanhTien() {
         return soLuong * donGia;
     }

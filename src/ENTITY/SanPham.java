@@ -72,13 +72,13 @@ public class SanPham {
 		this.trangThai = trangThai;
 	}
 
-	// ===== METHOD BỔ SUNG =====
-	/** Kiểm tra còn hàng để bán */
+
+	// Kiểm tra còn hàng để bán 
 	public boolean conHang() {
 		return soLuongTon > 0 && trangThai != TrangThaiSanPham.HET_HANG;
 	}
 
-	/** Cập nhật tồn kho (nhập thêm) */
+	// Cập nhật tồn kho (nhập thêm) 
 	public void nhapKho(int soLuong) {
 		if (soLuong <= 0)
 			throw new IllegalArgumentException("Số lượng nhập phải > 0");
@@ -88,7 +88,7 @@ public class SanPham {
 		}
 	}
 
-	/** Xuất kho (bán) */
+	// Xuất kho (bán) 
 	public boolean xuatKho(int soLuong) {
 		if (soLuong <= 0)
 			return false;
@@ -101,7 +101,7 @@ public class SanPham {
 		return true;
 	}
 
-	/** Kiểm tra có đang bán được không */
+	// Kiểm tra có đang bán được không 
 	public boolean coTheBan() {
 		return trangThai == TrangThaiSanPham.CON_BAN;
 	}

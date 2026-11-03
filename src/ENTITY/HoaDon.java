@@ -63,8 +63,7 @@ public class HoaDon {
     public List<ChiTietHoaDon> getChiTietList() { return chiTietList; }
     public void setChiTietList(List<ChiTietHoaDon> chiTietList) { this.chiTietList = chiTietList; }
 
-    // ===== METHOD BỔ SUNG =====
-    /** Thêm chi tiết hóa đơn */
+
     public void themChiTiet(ChiTietHoaDon ct) {
         if (ct == null) return;
         // kiểm tra trùng sản phẩm
@@ -78,7 +77,7 @@ public class HoaDon {
         chiTietList.add(ct);
     }
 
-    /** Tính tổng tiền trước giảm giá */
+    // Tính tổng tiền trước giảm giá 
     public double tinhTongTien() {
         double tong = 0;
         for (ChiTietHoaDon ct : chiTietList) {
@@ -87,7 +86,7 @@ public class HoaDon {
         return tong;
     }
 
-    /** Tính tiền sau khi giảm giá */
+    // Tính tiền sau khi giảm giá
     public double tinhThanhTien() {
         double tong = tinhTongTien();
         if (maKhuyenMai != null && maKhuyenMai.conHieuLuc()) {
@@ -96,7 +95,7 @@ public class HoaDon {
         return tong;
     }
 
-    /** Hủy hóa đơn */
+
     public void huyHoaDon(String lyDo) {
         if (lyDo == null || lyDo.trim().isEmpty()) {
             throw new IllegalArgumentException("Phải có lý do hủy!");
@@ -105,7 +104,7 @@ public class HoaDon {
         this.trangThai = TrangThaiHoaDon.DA_HUY;
     }
 
-    /** Xác nhận thanh toán */
+ 
     public void thanhToan() {
         if (this.trangThai == TrangThaiHoaDon.DA_HUY) {
             throw new IllegalStateException("Hóa đơn đã bị hủy, không thể thanh toán!");
@@ -132,7 +131,7 @@ public class HoaDon {
 
     // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
 
-    /** Tạo và thêm dòng chi tiết (mã dòng = mã hóa đơn + mã sản phẩm). */
+    // Tạo và thêm dòng chi tiết (mã dòng = mã hóa đơn + mã sản phẩm).
     public ChiTietHoaDon taoChiTiet(SanPham sp, int soLuong, double donGia) {
         ChiTietHoaDon ct = new ChiTietHoaDon(this, sp, soLuong, donGia);
         themChiTiet(ct);
@@ -145,18 +144,17 @@ public class HoaDon {
         return n;
     }
 
-    /** Tiền giảm của hóa đơn (theo % khuyến mãi đã chọn lúc lập). */
+    // Tiền giảm của hóa đơn (theo % khuyến mãi đã chọn lúc lập). 
     public double tienGiam() {
         return maKhuyenMai == null ? 0 : maKhuyenMai.tinhTienGiamDaApDung(tinhTongTien());
     }
 
-    /** Thành tiền của hóa đơn đã lập (ổn định, không đổi khi khuyến mãi hết hạn). */
+    // Thành tiền của hóa đơn đã lập (ổn định, không đổi khi khuyến mãi hết hạn).
     public double thanhTienDaLap() { return tinhTongTien() - tienGiam(); }
 
-    /**
-     * Lập hóa đơn: kiểm tra tồn kho, xuất kho toàn bộ sản phẩm, cộng điểm khách hàng, chuyển sang "Đã thanh toán".
-     * @return false nếu giỏ rỗng hoặc có sản phẩm không đủ tồn (khi đó không thay đổi gì).
-     */
+    
+    //Lập hóa đơn: kiểm tra tồn kho, xuất kho toàn bộ sản phẩm, cộng điểm khách hàng, chuyển sang "Đã thanh toán".
+    //@return false nếu giỏ rỗng hoặc có sản phẩm không đủ tồn (khi đó không thay đổi gì).
     public boolean lapHoaDon() {
         if (chiTietList.isEmpty() || maKhachHang == null) return false;
         for (ChiTietHoaDon ct : chiTietList)
@@ -167,7 +165,7 @@ public class HoaDon {
         return true;
     }
 
-    /** Hủy hóa đơn kèm lý do; nếu đã thanh toán thì hoàn lại tồn kho và thu hồi điểm tích lũy. */
+    //huyhoadon + hoàn kho
     public void huyVaHoanKho(String lyDo) {
         if (this.trangThai == TrangThaiHoaDon.DA_HUY) throw new IllegalStateException("Hóa đơn này đã được hủy!");
         boolean daThanhToan = daThanhToan();

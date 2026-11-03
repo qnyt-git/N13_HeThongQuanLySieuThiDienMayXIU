@@ -11,11 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** DAO của TaiKhoanNhanVien (bảng TaiKhoanNhanVien). Cột loaiQuyen lưu tên hằng enum. */
 public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
 
     private static LoaiQuyen docQuyen(String s) {
-        String x = s == null ? "" : s.trim();
+        String x = s == null ? "" : s.trim();	
         for (LoaiQuyen q : LoaiQuyen.values()) {
             if (q.name().equalsIgnoreCase(x) || q.toString().equalsIgnoreCase(x)) return q;
         }
@@ -28,7 +27,7 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
 
     @Override
     public List<TaiKhoanNhanVien> getAll() {
-        List<TaiKhoanNhanVien> ds = new ArrayList<>();
+        List<TaiKhoanNhanVien> ds = new ArrayList<>(); // tạo 1 ds tài khoản: biến ds
 
         Map<String, NhanVien> nv = new HashMap<>();
         for (NhanVien n : new NhanVienDAO().getAll()) nv.put(n.getMaNhanVien(), n);
@@ -39,7 +38,7 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
+            while (rs.next()) { //Duyệt qua từng dòng dữ liệu SQL trả về để tạo mới một đối tượng TaiKhoanNhanVien
                 ds.add(new TaiKhoanNhanVien(
                         rs.getString("maTaiKhoan"),
                         rs.getString("tenDangNhap"),
@@ -54,19 +53,20 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
         return ds;
     }
 
-    /** Tìm tài khoản theo tên đăng nhập (kèm nhân viên). @return null nếu không có. */
+    // Tìm 
     public TaiKhoanNhanVien timTheoTenDangNhap(String tenDangNhap) throws Exception {
         String sql = "SELECT maTaiKhoan, tenDangNhap, matKhau, loaiQuyen, trangThai, maNhanVien "
                 + "FROM TaiKhoanNhanVien WHERE tenDangNhap = ?";
 
-        String maTK, tenDN, matKhau, quyen, maNhanVien;
+        //biến tạm để lưu trữ dữ liệu
+        String maTK, tenDN, matKhau, quyen, maNhanVien; 
         boolean trangThai;
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, tenDangNhap);
+            ps.setString(1, tenDangNhap); // gắn giá trị tenDangNhap vào dấu ?
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) return null;
+            try (ResultSet rs = ps.executeQuery()) { //thực thi tìm và nhận kết quả vào rs
+                if (!rs.next()) return null; 		// nếu không thấy thì trả về null
 
                 maTK = rs.getString("maTaiKhoan");
                 tenDN = rs.getString("tenDangNhap");
@@ -76,14 +76,14 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
                 maNhanVien = rs.getString("maNhanVien");
             }
         }
-
+        
         NhanVien nv = new NhanVienDAO().timTheoMa(maNhanVien);
-
+        
         return new TaiKhoanNhanVien(
                 maTK, tenDN, nv, matKhau, docQuyen(quyen), trangThai
         );
     }
-
+    //thêm
     @Override
     public boolean them(TaiKhoanNhanVien t) {
         String sql = "INSERT INTO TaiKhoanNhanVien(maTaiKhoan, tenDangNhap, matKhau, loaiQuyen, trangThai, maNhanVien) "
@@ -103,6 +103,7 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
         return false;
     }
 
+    //sửa
     @Override
     public boolean capNhat(TaiKhoanNhanVien t) {
         String sql = "UPDATE TaiKhoanNhanVien SET tenDangNhap = ?, matKhau = ?, loaiQuyen = ?, trangThai = ?, "
@@ -121,7 +122,8 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
         }
         return false;
     }
-
+    
+    //xóa
     @Override
     public boolean xoa(TaiKhoanNhanVien t) {
         String sql = "DELETE FROM TaiKhoanNhanVien WHERE maTaiKhoan = ?";
@@ -134,7 +136,8 @@ public class TaiKhoanNhanVienDAO implements IDAO<TaiKhoanNhanVien> {
         }
         return false;
     }
-
+    
+    //tạo mã tự động
     @Override
     public String taoMaMoi() {
         int max = 0;

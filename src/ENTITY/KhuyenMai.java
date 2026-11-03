@@ -37,25 +37,25 @@ public class KhuyenMai {
     public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
 
     // ===== METHOD BỔ SUNG =====
-    /** Kiểm tra khuyến mãi còn hiệu lực */
+    // Kiểm tra khuyến mãi còn hiệu lực
     public boolean conHieuLuc() {
         if (!trangThai) return false;
         LocalDateTime now = LocalDateTime.now();
         return now.isAfter(thoiGianBatDau) && now.isBefore(thoiGianKetThuc);
     }
 
-    /** Tính tiền giảm từ tổng tiền */
+    // Tính tiền giảm từ tổng tiền
     public double tinhTienGiam(double tongTien) {
         if (!conHieuLuc()) return 0;
         return tongTien * (giaTriGiam / 100.0);
     }
 
-    /** Áp dụng giảm giá */
+    // Áp dụng giảm giá 
     public double apDung(double tongTien) {
         return tongTien - tinhTienGiam(tongTien);
     }
 
-    /** Gia hạn */
+    // Gia hạn 
     public void giaHan(LocalDateTime ngayKetThucMoi) {
         if (ngayKetThucMoi.isAfter(thoiGianBatDau)) {
             this.thoiGianKetThuc = ngayKetThucMoi;
@@ -93,7 +93,6 @@ public class KhuyenMai {
             && !thoiGianKetThuc.isBefore(thoiGianBatDau);
     }
 
-    /** Tiền giảm theo % đã áp dụng lúc lập hóa đơn (không phụ thuộc hạn hiện tại của khuyến mãi). */
     public double tinhTienGiamDaApDung(double tongTien) {
         return tongTien * (giaTriGiam / 100.0);
     }

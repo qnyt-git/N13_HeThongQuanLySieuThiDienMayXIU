@@ -35,14 +35,13 @@ public class TaiKhoanNhanVien {
     public boolean isTrangThai() { return trangThai; }
     public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
 
-    // ===== METHOD BỔ SUNG =====
-    /** Đăng nhập - kiểm tra tài khoản/mật khẩu */
+    // Đăng nhập - kiểm tra tài khoản/mật khẩu 
     public boolean dangNhap(String tenDangNhap, String matKhau) {
         if (!this.trangThai) return false;
         return this.tenDangNhap.equals(tenDangNhap) && this.matKhau.equals(matKhau);
     }
 
-    /** Đổi mật khẩu */
+    // Đổi mật khẩu 
     public boolean doiMatKhau(String matKhauCu, String matKhauMoi) {
         if (!this.matKhau.equals(matKhauCu)) return false;
         if (matKhauMoi == null || matKhauMoi.length() < 6) return false;
@@ -50,12 +49,12 @@ public class TaiKhoanNhanVien {
         return true;
     }
 
-    /** Kích hoạt / vô hiệu hóa tài khoản */
+    // Kích hoạt / vô hiệu hóa tài khoản 
     public void doiTrangThai() {
         this.trangThai = !this.trangThai;
     }
 
-    /** Kiểm tra quyền có phải quản lý không */
+    // Kiểm tra quyền có phải quản lý không 
     public boolean laQuanLy() {
         return this.loaiQuyen == LoaiQuyen.QUAN_LY;
     }
@@ -78,11 +77,11 @@ public class TaiKhoanNhanVien {
                ", loaiQuyen=" + loaiQuyen + ", trangThai=" + trangThai + "]";
     }
 
-    // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
+    
 
     public String trangThaiText() { return trangThai ? "Hoạt động" : "Tạm khóa"; }
 
-    /** @return null nếu đăng nhập hợp lệ, ngược lại là thông báo lỗi. */
+
     public String kiemTraDangNhap(String tenDN, String mk) {
         if (this.tenDangNhap == null || !this.tenDangNhap.equals(tenDN)) return "Tên đăng nhập không tồn tại";
         if (!this.trangThai) return "Tài khoản đang bị khóa";
@@ -90,7 +89,7 @@ public class TaiKhoanNhanVien {
         return null;
     }
 
-    /** Quên mật khẩu: xác thực bằng số điện thoại nhân viên. @return null nếu thành công, ngược lại là lỗi. */
+    
     public String datLaiMatKhau(String soDienThoai, String matKhauMoi) {
         if (maNhanVien == null || !maNhanVien.getSoDienThoai().equals(soDienThoai)) return "Số điện thoại không khớp với nhân viên";
         if (matKhauMoi == null || matKhauMoi.length() < 6) return "Mật khẩu mới tối thiểu 6 ký tự";

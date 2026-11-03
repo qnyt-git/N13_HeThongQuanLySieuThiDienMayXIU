@@ -20,16 +20,10 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import com.toedter.calendar.JDateChooser;
 
-/**
- * Màn hình danh mục dùng chung cho một lớp entity T: bảng + tìm kiếm + Thêm/Sửa/Xóa trong hộp thoại nhập liệu.
- * - dao    : truy cập dữ liệu (getAll/them/capNhat/xoa/taoMaMoi)
- * - row    : chuyển entity thành một dòng bảng (cột đầu là mã)
- * - create : tạo entity rỗng với mã mới; apply : ghi giá trị form vào entity bằng setter
- */
+
 public class CrudPanel<T> extends JPanel implements Refreshable {
     public enum Kind { TEXT, NAME, PHONE, EMAIL, INT_POS, INT_NONNEG, MONEY, DECIMAL, DATE, TIME, COMBO, AREA, PASSWORD }
 
-    /** Mô tả một trường nhập liệu. */
     public static class F {
         final String label; final Kind kind;
         Supplier<Object[]> opts = () -> new Object[0];
@@ -155,11 +149,17 @@ public class CrudPanel<T> extends JPanel implements Refreshable {
         p.setBackground(Color.WHITE); p.setBorder(new EmptyBorder(18, 22, 10, 22));
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(6, 4, 6, 4); g.anchor = GridBagConstraints.WEST;
-
-        Object[] cur = edit ? row.apply(editing) : null;
-        String id = edit ? cur[0].toString() : dao.taoMaMoi();
-        JTextField idf = Theme.field(24); idf.setText(id); idf.setEnabled(false);
-        addRow(p, g, 0, model.getColumnName(0) + " (tự động)", idf);
+        
+        //sinh mã tự động
+        Object[] cur = edit ? row.apply(editing) : null; //lấy biến edit(true/false) //kiểm tra nếu đang sửa thì 1 / thêm mới thì  0
+        String id = edit ? cur[0].toString() : dao.taoMaMoi(); // sửa giữ nguyên mã - thêm mới sinh gọi method sinh mã mới
+        JTextField idf = Theme.field(24); // tao ô nhập biến idf
+        		   idf.setText(id); 	// cho ô nhập chứa cái mã mới sinh (id)
+        		   idf.setEnabled(false); // disabled cái ô đó đi
+        addRow(p, g, 0, model.getColumnName(0) + " (tự động)", idf); 
+        // p: biến chỉ định panel
+        // g: Biến GridBagConstraints cấu hình vị trí lề, khoảng cách canh chỉnh
+        // 0: vị trí đầu tiên trong bảng (gridy = 0)
 
         JComponent[] comps = new JComponent[fields.size()];
         for (int i = 0; i < fields.size(); i++) {
@@ -175,7 +175,7 @@ public class CrudPanel<T> extends JPanel implements Refreshable {
         JPanel south = new JPanel(new BorderLayout()); south.setBackground(Color.WHITE); south.setBorder(new EmptyBorder(0, 22, 16, 22));
         JPanel bt = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0)); bt.setBackground(Color.WHITE); bt.add(cancel); bt.add(save);
         south.add(err, BorderLayout.NORTH); south.add(bt, BorderLayout.SOUTH);
-
+        
         save.addActionListener(e -> {
             Object[] vals = new Object[fields.size() + 1]; vals[0] = id;
             for (int i = 0; i < fields.size(); i++) {

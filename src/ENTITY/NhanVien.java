@@ -97,33 +97,26 @@ public class NhanVien {
 	
 	
 	
-	
-	
-	
-	
-	// ===== METHOD BỔ SUNG =====
-    /** Tính lương */
+  
     public double tinhLuong() {
         return heSoLuong * luongCoBan;
     }
 
-    /** Kiểm tra còn làm việc */
+
     public boolean conLamViec() { return trangThai; }
 
-    /** Nghỉ việc */
+
     public void nghiViec() { this.trangThai = false; }
 
-    /** Cập nhật thông tin cá nhân (placeholder) */
+ 
     public void capNhatThongTin(String hoTen, String sdt, LocalDate ngaySinh) {
         if (hoTen != null && !hoTen.isEmpty()) this.hoTenNhanVien = hoTen;
         if (sdt != null && !sdt.isEmpty()) this.soDienThoai = sdt;
         if (ngaySinh != null) this.ngaySinh = ngaySinh;
     }
 
-    /** Đăng ký ca (placeholder) */
-    public void dangKyCaLam() {
-        // sẽ được xử lý bởi PhanCa
-    }
+ 
+ 
 
     @Override
     public boolean equals(Object o) {
@@ -142,18 +135,18 @@ public class NhanVien {
 
     // ===== METHOD BỔ SUNG CHO GIAO DIỆN / DAO =====
 
-    /** Tuổi tính đến hôm nay. */
+    //Tuổi tính đến hôm nay.
     public int tuoi() {
         return ngaySinh == null ? 0 : java.time.Period.between(ngaySinh, LocalDate.now()).getYears();
     }
 
-    /** Ngày sinh hợp lệ: không ở tương lai và đủ 18 tuổi. */
+
     public boolean hopLeNgaySinh() {
         return ngaySinh != null && !ngaySinh.isAfter(LocalDate.now()) && tuoi() >= 18;
     }
 
     public String trangThaiText() { return trangThai ? "Đang làm" : "Nghỉ việc"; }
 
-    /** Hệ số lương dạng double (tránh sai số 2.2 -> 2.200000047 của float). */
+
     public double heSoLuongDouble() { return Double.parseDouble(Float.toString(heSoLuong)); }
 }

@@ -8,13 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO của NhanVien. Cột gioiTinh, trinhDoHocVan chưa có trong entity nên thêm mới để NULL,
- * khi sửa thì không đụng tới hai cột này.
- */
+
 public class NhanVienDAO implements IDAO<NhanVien> {
 
-    private static NhanVien mapNhanVien(ResultSet rs) throws SQLException {
+    private static NhanVien maNhanVien(ResultSet rs) throws SQLException {
         java.sql.Date ns = rs.getDate("ngaySinh");
         return new NhanVien(
                 rs.getString("maNhanVien"),
@@ -29,13 +26,17 @@ public class NhanVienDAO implements IDAO<NhanVien> {
                 rs.getBoolean("trangThai"));
     }
 
+    // khi thêm/sửa nhânviên xuống csdl
+    // Phải thông qua hàm này để quy đổi về đúng chuẩn ngày tháng mà SQL Server đọc được
+    // Java không thể nhét trực tiếp kiểu LocalDate vào câu lệnh của JDBC
     private static java.sql.Date toSqlDate(NhanVien n) {
         return n.getNgaySinh() == null ? null : java.sql.Date.valueOf(n.getNgaySinh());
     }
-
+    
+    //lấy ds nv
     @Override
     public List<NhanVien> getAll() {
-        List<NhanVien> ds = new ArrayList<>();
+        List<NhanVien> ds = new ArrayList<>(); //tạo 1 danh sách nv: biến ds
         String sql = "SELECT maNhanVien, hoTenNhanVien, gioiTinh, chucVu, soDienThoai, ngaySinh, trinhDoHocVan, heSoLuong, luongCoBan, trangThai "
                 + "FROM NhanVien ORDER BY maNhanVien";
 
@@ -43,7 +44,7 @@ public class NhanVienDAO implements IDAO<NhanVien> {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                ds.add(mapNhanVien(rs));
+                ds.add(maNhanVien(rs)); //vòng lặp lấy ds nv rồi đẩy lên
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,30 +52,31 @@ public class NhanVienDAO implements IDAO<NhanVien> {
         return ds;
     }
 
-    /** Tìm nhân viên theo mã; null nếu không có. */
+    //tìm
     public NhanVien timTheoMa(String maNhanVien) throws SQLException {
         String sql = "SELECT maNhanVien, hoTenNhanVien, gioiTinh, chucVu, soDienThoai, ngaySinh, trinhDoHocVan, heSoLuong, luongCoBan, trangThai "
                 + "FROM NhanVien WHERE maNhanVien = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, maNhanVien);
+            ps.setString(1, maNhanVien); //gán giá trị vô dấu ? (để tìm)
 
-            try (ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) { //thực thi truy vấn
                 if (rs.next()) {
-                    return mapNhanVien(rs);
+                    return maNhanVien(rs); //kiểm tra xem có nv nào mã đó không
                 }
-                return null;
+                return null; 
             }
         }
     }
-
+    
+    //thêm
     @Override
     public boolean them(NhanVien n) {
         String sql = "INSERT INTO NhanVien(maNhanVien, hoTenNhanVien, gioiTinh, chucVu, soDienThoai, ngaySinh, trinhDoHocVan, heSoLuong, "
                 + "luongCoBan, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, n.getMaNhanVien());
+            ps.setString(1, n.getMaNhanVien());			// lấy giá trị từ n
             ps.setString(2, n.getHoTenNhanVien());
             ps.setBoolean(3, n.isGioiTinh());
             ps.setString(4, n.getChucVu());
@@ -84,20 +86,21 @@ public class NhanVienDAO implements IDAO<NhanVien> {
             ps.setDouble(8, n.getHeSoLuong());
             ps.setInt(9, n.getLuongCoBan());
             ps.setBoolean(10, n.isTrangThai());
-            return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;			//cập nhật  nếu biểu thức >0
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();	
         }
         return false;
     }
-
+    
+    //sửa
     @Override
     public boolean capNhat(NhanVien n) {
         String sql = "UPDATE NhanVien SET hoTenNhanVien = ?, gioiTinh = ?, chucVu = ?, soDienThoai = ?, ngaySinh = ?, "
                 + "trinhDoHocVan = ?, heSoLuong = ?, luongCoBan = ?, trangThai = ? WHERE maNhanVien = ?";
 
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-        	ps.setString(1, n.getHoTenNhanVien());
+        	ps.setString(1, n.getHoTenNhanVien()); 		// lấy giá trị từ n
             ps.setBoolean(2, n.isGioiTinh());
             ps.setString(3, n.getChucVu());
             ps.setString(4, n.getSoDienThoai());
@@ -107,20 +110,21 @@ public class NhanVienDAO implements IDAO<NhanVien> {
             ps.setInt(8, n.getLuongCoBan());
             ps.setBoolean(9, n.isTrangThai());
             ps.setString(10, n.getMaNhanVien());
-            return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;			//cập nhật nếu biểu thức > 0
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
+    //xóa
     @Override
     public boolean xoa(NhanVien n) {
         String sql = "DELETE FROM NhanVien WHERE maNhanVien = ?";
-
+        // xóa nhân viên theo cột mã nhân viên
         try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-            ps.setString(1, n.getMaNhanVien());
-            return ps.executeUpdate() > 0;
+            ps.setString(1, n.getMaNhanVien());	// lấy mã nhân viên
+            return ps.executeUpdate() > 0; 		// cập nhật nếu số dòng > 0
         } catch (Exception e) {
             e.printStackTrace();
         }

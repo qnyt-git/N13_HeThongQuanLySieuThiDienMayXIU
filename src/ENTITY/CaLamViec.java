@@ -27,20 +27,20 @@ public class CaLamViec {
     public LocalDateTime getGioKetThuc() { return gioKetThuc; }
     public void setGioKetThuc(LocalDateTime gioKetThuc) { this.gioKetThuc = gioKetThuc; }
 
-    // ===== METHOD BỔ SUNG =====
-    /** Kiểm tra giờ kết thúc > giờ bắt đầu */
+  
+
     public boolean hopLe() {
         return gioBatDau != null && gioKetThuc != null
             && gioKetThuc.isAfter(gioBatDau);
     }
 
-    /** Thời lượng ca (phút) */
+
     public long thoiLuongPhut() {
         if (!hopLe()) return 0;
         return java.time.Duration.between(gioBatDau, gioKetThuc).toMinutes();
     }
 
-    /** Kiểm tra 1 thời điểm có nằm trong ca */
+   
     public boolean trongCa(LocalDateTime thoiDiem) {
         return thoiDiem != null
             && !thoiDiem.isBefore(gioBatDau)
@@ -58,14 +58,14 @@ public class CaLamViec {
 
     public String gioKetThucText() { return gioKetThuc == null ? "" : gioKetThuc.format(GIO); }
 
-    /** Đặt giờ bắt đầu/kết thúc theo ngày hôm nay (ca làm việc chỉ quan tâm giờ). */
+    // Đặt giờ bắt đầu/kết thúc theo ngày hôm nay (ca làm việc chỉ quan tâm giờ).
     public void datGio(java.time.LocalTime batDau, java.time.LocalTime ketThuc) {
         java.time.LocalDate ngay = java.time.LocalDate.now();
         this.gioBatDau = ngay.atTime(batDau);
         this.gioKetThuc = ngay.atTime(ketThuc);
     }
 
-    /** Ca làm phải nằm trong khung 06:00 - 23:00. */
+    // Ca làm phải nằm trong khung 06:00 - 23:00.
     public boolean trongKhungGioChoPhep() {
         return gioBatDau != null && gioKetThuc != null
             && !gioBatDau.toLocalTime().isBefore(java.time.LocalTime.of(6, 0))

@@ -58,7 +58,7 @@ public class PhanCa {
 
     public boolean daNghi() { return trangThai == TrangThaiPhanCa.NGHI; }
 
-    /** Ngày làm nằm trong tuần bắt đầu từ thuHai (thứ Hai). */
+    // Ngày làm nằm trong tuần bắt đầu từ thuHai (thứ Hai).
     public boolean thuocTuan(LocalDate thuHai) {
         return ngayLam != null && !ngayLam.isBefore(thuHai) && !ngayLam.isAfter(thuHai.plusDays(6));
     }

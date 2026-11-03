@@ -85,7 +85,7 @@ public class PhieuDatHang {
         return ct;
     }
 
-    /** Nhãn trạng thái; entity chỉ có boolean nên "Đã giao" được suy ra từ việc đã lập hóa đơn. */
+
     public String trangThaiText() {
         return trangThai == null ? "" : trangThai.toString();
     }

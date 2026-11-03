@@ -80,7 +80,7 @@ public class KhachHang {
         
     }
 
-    /** Thu hồi điểm đã cộng khi hủy hóa đơn. */
+	//Thu hồi điểm đã cộng khi hủy hóa đơn.
     public void thuHoiDiemTuHoaDon(double thanhTien) {
         capNhatDiemTichLuy(-(int) (thanhTien / 100_000));
     }
@@ -90,8 +90,6 @@ public class KhachHang {
         return hoTenKhachHang + " - " + soDienThoai;
     }
 	
-    
-	
-    
+ 
     
 }
